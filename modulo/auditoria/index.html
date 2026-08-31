@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema de Auditoría — Negoria · CAISE Mercado</title>
+<meta name="description" content="La funci&oacute;n diagn&oacute;stica: KPIs, desviaciones y revisiones que cierran el lazo entre lo planeado y lo ocurrido.">
+<meta name="theme-color" content="#17181C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2317181C'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Inter,Helvetica,Arial,sans-serif' font-size='16' font-weight='700' fill='%23C9E96E'%3EN%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff; --paper-2:#f4f5f8; --ink:#17181c; --ink-2:#45484f; --ink-3:#63666f; --ink-muted:#9d9fa9;
+  --steel:#3a5fb5; --peri-tint:#f2f5fd; --lime:#c9e96e; --lime-deep:#4d7c0f; --lime-soft:#def2a2;
+  --line:#e7e8ee; --line-2:#f0f1f5; --line-strong:#d9dbe3; --canvas:#e6e7ee; --navy:#17181c; --radius:16px;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,monospace;
+  --shadow-card:0 1px 2px rgba(23,24,28,.03),0 10px 26px -22px rgba(23,24,28,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:.875rem;line-height:1.5;color:var(--ink);background:var(--canvas);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:880px;margin:0 auto;padding:0 1.6rem}
+::selection{background:var(--lime-soft);color:var(--ink)}
+.topbar{background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar__in{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:.7rem}
+.brand__glyph{width:30px;height:30px;border-radius:8px;background:var(--navy);color:var(--lime);font-weight:700;font-size:.95rem;display:grid;place-items:center}
+.brand__text{display:flex;flex-direction:column;line-height:1.15}
+.brand__name{font-weight:700;font-size:.95rem}
+.brand__sub{font-family:var(--mono);font-size:.56rem;letter-spacing:.26em;color:var(--lime-deep);font-weight:600}
+.topnav{display:flex;align-items:center;gap:1.4rem}
+.topnav a{font-size:.8rem;color:var(--ink-2);text-decoration:none}
+.topnav a:hover{color:var(--ink)}
+.topnav a.is-cta{color:var(--ink);font-weight:600}
+.masthead{padding:3.6rem 0 2.8rem;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--steel)}
+.masthead h1{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;letter-spacing:-.02em;margin:.9rem 0 1rem}
+.masthead .lead{font-size:1rem;line-height:1.7;color:var(--ink-2);max-width:680px}
+.masthead .lead strong{color:var(--ink);font-weight:600}
+.masthead__meta{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:1.5rem}
+.meta-pill{font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);border:1px solid var(--line-strong);border-radius:999px;padding:.28rem .8rem;background:var(--paper)}
+.meta-pill.is-live{color:var(--lime-deep);border-color:var(--lime-deep);background:#f4fae8;font-weight:600}
+section{padding:2.6rem 0}
+.figcap{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem}
+.figcap__tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--steel);white-space:nowrap}
+.figcap__rule{flex:1;height:1px;background:var(--line);align-self:center}
+.problem{background:var(--peri-tint);border-left:3px solid var(--steel);border-radius:0 var(--radius) var(--radius) 0;padding:1.3rem 1.5rem;font-size:.98rem;line-height:1.7;color:var(--ink-2)}
+.problem strong{color:var(--ink)}
+.defintro{font-size:.92rem;color:var(--ink-2);margin-bottom:1rem}
+.deflist{list-style:none}
+.deflist li{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:.85rem 1.1rem;margin-bottom:.6rem;font-size:.82rem;color:var(--ink-3);line-height:1.55;box-shadow:var(--shadow-card)}
+.deflist li strong{display:block;color:var(--ink);font-weight:600;margin-bottom:.15rem}
+.df-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.df{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:1.1rem 1.25rem;box-shadow:var(--shadow-card)}
+.df h3{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin-bottom:.8rem}
+.df.is-in h3{color:var(--lime-deep)}
+.df ul{list-style:none}
+.df li{font-size:.8rem;color:var(--ink-3);line-height:1.55;padding:.45rem 0;border-top:1px solid var(--line-2)}
+.df li:first-child{border-top:0;padding-top:0}
+.ifaces{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-card)}
+.ifaces th{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:.7rem 1rem;background:var(--paper-2);border-bottom:1px solid var(--line)}
+.ifaces td{font-size:.8rem;color:var(--ink-3);padding:.7rem 1rem;border-bottom:1px solid var(--line-2);vertical-align:top}
+.ifaces tr:last-child td{border-bottom:0}
+.ifaces td:first-child{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);font-weight:600;white-space:nowrap}
+.ifaces td:nth-child(2){color:var(--ink);font-weight:600;white-space:nowrap}
+.estado{border-radius:var(--radius);padding:1.3rem 1.5rem;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap}
+.estado--soon{border:1px dashed var(--line-strong);background:var(--paper-2)}
+.estado--live{border:1px solid var(--lime-deep);background:#f4fae8}
+.estado__badge{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--ink-3);border:1px solid var(--line-strong);border-radius:999px;padding:.35rem .95rem;flex:0 0 auto}
+.estado--live .estado__badge{color:var(--lime-deep);border-color:var(--lime-deep)}
+.estado p{flex:1;font-size:.82rem;color:var(--ink-3);line-height:1.6;min-width:220px}
+.estado p strong{color:var(--ink-2)}
+.estado a{color:var(--lime-deep);font-weight:600;text-decoration:none;white-space:nowrap}
+footer{border-top:1px solid var(--line);background:var(--paper)}
+.foot__in{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.2rem 0;flex-wrap:wrap}
+.foot__links{display:flex;gap:1.3rem}
+.foot__links a{font-size:.78rem;color:var(--ink-2);text-decoration:none}
+.foot__links a:hover{color:var(--ink)}
+.foot__brand{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--ink-muted)}
+@media (max-width:680px){.df-grid{grid-template-columns:1fr}.topnav a:not(.is-cta){display:none}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar__in">
+    <div class="brand">
+      <span class="brand__glyph" aria-hidden="true">N</span>
+      <div class="brand__text">
+        <span class="brand__name">Negoria</span>
+        <span class="brand__sub">CAISE MERCADO</span>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="../../">&#8592; Negoria</a>
+      <a href="../../spec/auditoria/spec.md">Entrada conceptual</a>
+      
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="masthead">
+    <div class="eyebrow">Nivel VSM &middot; Sistema 3 &mdash; Auditor&iacute;a</div>
+    <h1>Sistema de Auditor&iacute;a</h1>
+    <p class="lead">La funci&oacute;n diagn&oacute;stica: KPIs, desviaciones y revisiones que cierran el lazo entre lo planeado y lo ocurrido.</p>
+    <div class="masthead__meta">
+      <span class="meta-pill">SA</span>
+      <span class="meta-pill">Pr&oacute;ximamente</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">01 · El problema funcional</span><span class="figcap__rule"></span></div>
+    <div class="problem"><strong>&iquest;C&oacute;mo detecta una empresa, antes de que sea tarde, que se est&aacute; desviando de sus objetivos, sus est&aacute;ndares o sus pol&iacute;ticas &mdash; y convierte cada desviaci&oacute;n en un aprendizaje que cambia el sistema?</strong></div>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">02 · Qu&eacute; es</span><span class="figcap__rule"></span></div>
+    <p class="defintro">La verificaci&oacute;n sistem&aacute;tica del desempe&ntilde;o contra los est&aacute;ndares:</p>
+    <ul class="deflist">
+            <li><strong>KPIs</strong>Las m&eacute;tricas vitales por &aacute;rea, con metas y umbrales.</li>
+      <li><strong>Revisiones peri&oacute;dicas</strong>Semanal, mensual, trimestral: qu&eacute; se prometi&oacute;, qu&eacute; ocurri&oacute;, por qu&eacute;.</li>
+      <li><strong>Detecci&oacute;n de desviaciones</strong>Comparaci&oacute;n sistem&aacute;tica contra plan, pol&iacute;tica y est&aacute;ndares.</li>
+      <li><strong>Cierre del lazo</strong>Cada desviaci&oacute;n produce un ajuste operativo o una adaptaci&oacute;n de pol&iacute;tica.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">03 · Alcance</span><span class="figcap__rule"></span></div>
+    <div class="df-grid">
+      <div class="df is-in">
+        <h3>Dentro</h3>
+        <ul>
+          <li>Definici&oacute;n y c&aacute;lculo de KPIs sobre los registros de Recursos y operativos.</li>
+          <li>El ritual de revisi&oacute;n y su registro de hallazgos.</li>
+          <li>Clasificaci&oacute;n de desviaciones: ruido, problema operativo, problema de pol&iacute;tica.</li>
+        </ul>
+      </div>
+      <div class="df">
+        <h3>Fuera</h3>
+        <ul>
+          <li>La correcci&oacute;n operativa (Control, S3).</li>
+          <li>El cambio de direcci&oacute;n (Pol&iacute;tica, S5).</li>
+          <li>El registro del aprendizaje (Conocimiento, S4 &mdash; aunque lo alimenta).</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">04 · Interfaces</span><span class="figcap__rule"></span></div>
+    <table class="ifaces">
+      <thead><tr><th>Direcci&oacute;n</th><th>Sistema</th><th>Qu&eacute; fluye</th></tr></thead>
+      <tbody>
+        <tr><td>Recibe</td><td>Recursos (S3)</td><td>Series y estados de recursos.</td></tr>
+        <tr><td>Recibe</td><td>Pol&iacute;tica (S5)</td><td>Est&aacute;ndares y metas contra los cuales auditar.</td></tr>
+        <tr><td>Entrega</td><td>Control (S3)</td><td>Desviaciones que exigen replanificar.</td></tr>
+        <tr><td>Entrega</td><td>Pol&iacute;tica (S5)</td><td>Evidencia de desempe&ntilde;o para adaptar la estrategia.</td></tr>
+        <tr><td>Entrega</td><td>Conocimiento (S4)</td><td>Aprendizajes y registros de revisi&oacute;n.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">05 · Estado</span><span class="figcap__rule"></span></div>
+    <div class="estado estado--soon">
+      <span class="estado__badge">Pr&oacute;ximamente</span>
+      <p><strong>Este sistema a&uacute;n no est&aacute; implementado.</strong> Lo que vive hoy es su descripci&oacute;n y su entrada conceptual &mdash; la implementaci&oacute;n llegar&aacute; despu&eacute;s.</p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap foot__in">
+    <div class="foot__links">
+      <a href="../../">Negoria</a>
+      <a href="../../spec/auditoria/spec.md">Entrada conceptual</a>
+    </div>
+    <span class="foot__brand">NEGORIA · CAISE MERCADO — MODELO DE SISTEMA VIABLE EMPRESARIAL</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAISE Mercado — La empresa · Negoria</title>
+<meta name="description" content="CAISE Mercado: la empresa — el agente que Negoria observa, dirige y coordina. Operación agrícola y comercial en República Dominicana.">
+<meta name="theme-color" content="#17181C">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2317181C'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Inter,Helvetica,Arial,sans-serif' font-size='16' font-weight='700' fill='%23C9E96E'%3EN%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff; --paper-2:#f4f5f8; --ink:#17181c; --ink-2:#45484f; --ink-3:#63666f; --ink-muted:#9d9fa9;
+  --steel:#3a5fb5; --peri-tint:#f2f5fd; --lime:#c9e96e; --lime-deep:#4d7c0f; --lime-soft:#def2a2;
+  --line:#e7e8ee; --line-2:#f0f1f5; --line-strong:#d9dbe3; --canvas:#e6e7ee; --navy:#17181c; --radius:16px;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,monospace;
+  --shadow-card:0 1px 2px rgba(23,24,28,.03),0 10px 26px -22px rgba(23,24,28,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);font-size:.875rem;line-height:1.5;color:var(--ink);background:var(--canvas);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.wrap{max-width:880px;margin:0 auto;padding:0 1.6rem}
+::selection{background:var(--lime-soft);color:var(--ink)}
+.topbar{background:var(--paper);border-bottom:1px solid var(--line)}
+.topbar__in{display:flex;align-items:center;justify-content:space-between;height:60px}
+.brand{display:flex;align-items:center;gap:.7rem;text-decoration:none}
+.brand__glyph{width:30px;height:30px;border-radius:8px;background:var(--navy);color:var(--lime);font-weight:700;font-size:.95rem;display:grid;place-items:center}
+.brand__text{display:flex;flex-direction:column;line-height:1.15}
+.brand__name{font-weight:700;font-size:.95rem}
+.brand__sub{font-family:var(--mono);font-size:.56rem;letter-spacing:.26em;color:var(--lime-deep);font-weight:600}
+.topnav{display:flex;align-items:center;gap:1.4rem}
+.topnav a{font-size:.8rem;color:var(--ink-2);text-decoration:none}
+.topnav a:hover{color:var(--ink)}
+.topnav a.is-cta{color:var(--ink);font-weight:600}
+.masthead{padding:3.6rem 0 2.8rem;border-bottom:1px solid var(--line)}
+.eyebrow{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--steel)}
+.masthead h1{font-size:clamp(1.8rem,4vw,2.5rem);font-weight:700;letter-spacing:-.02em;margin:.9rem 0 1rem}
+.masthead .lead{font-size:1rem;line-height:1.7;color:var(--ink-2);max-width:680px}
+.masthead .lead strong{color:var(--ink);font-weight:600}
+section{padding:2.6rem 0}
+.figcap{display:flex;align-items:baseline;gap:.9rem;margin-bottom:1.1rem}
+.figcap__tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--steel);white-space:nowrap}
+.figcap__rule{flex:1;height:1px;background:var(--line);align-self:center}
+.problem{background:var(--peri-tint);border-left:3px solid var(--steel);border-radius:0 var(--radius) var(--radius) 0;padding:1.3rem 1.5rem;font-size:.98rem;line-height:1.7;color:var(--ink-2)}
+.problem strong{color:var(--ink)}
+.problem + .bodytext{margin-top:1rem}
+.bodytext{font-size:.9rem;line-height:1.75;color:var(--ink-2);max-width:720px;margin-bottom:1rem}
+.bodytext strong{color:var(--ink);font-weight:600}
+.defintro{font-size:.92rem;color:var(--ink-2);margin-bottom:1rem}
+.deflist{list-style:none}
+.deflist li{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:.85rem 1.1rem;margin-bottom:.6rem;font-size:.82rem;color:var(--ink-3);line-height:1.55;box-shadow:var(--shadow-card)}
+.deflist li strong{display:block;color:var(--ink);font-weight:600;margin-bottom:.15rem}
+.ifaces{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow-card)}
+.ifaces th{font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:.7rem 1rem;background:var(--paper-2);border-bottom:1px solid var(--line)}
+.ifaces td{font-size:.8rem;color:var(--ink-3);padding:.7rem 1rem;border-bottom:1px solid var(--line-2);vertical-align:top}
+.ifaces tr:last-child td{border-bottom:0}
+.ifaces td:first-child{font-family:var(--mono);font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--steel);font-weight:600;white-space:nowrap}
+.ifaces td:nth-child(2){color:var(--ink);font-weight:600;white-space:nowrap}
+.estado{border:1px solid var(--lime-deep);background:#f4fae8;border-radius:var(--radius);padding:1.3rem 1.5rem;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap}
+.estado p{flex:1;font-size:.82rem;color:var(--ink-3);line-height:1.6;min-width:220px}
+.estado p strong{color:var(--ink-2)}
+.estado__actions{display:flex;gap:.5rem;flex-wrap:wrap}
+.estado a{font-size:.78rem;font-weight:600;text-decoration:none;border-radius:10px;padding:.55rem .9rem;border:1px solid var(--line-strong);color:var(--ink);background:var(--paper);transition:border-color .15s}
+.estado a:hover{border-color:var(--ink)}
+.estado a.is-live{background:var(--lime-soft);border-color:transparent}
+.estado a.is-live:hover{background:var(--lime)}
+footer{border-top:1px solid var(--line);background:var(--paper)}
+.foot__in{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:1.2rem 0;flex-wrap:wrap}
+.foot__links{display:flex;gap:1.3rem}
+.foot__links a{font-size:.78rem;color:var(--ink-2);text-decoration:none}
+.foot__links a:hover{color:var(--ink)}
+.foot__brand{font-family:var(--mono);font-size:.62rem;letter-spacing:.08em;color:var(--ink-muted)}
+@media (max-width:680px){.topnav a:not(.is-cta){display:none}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar__in">
+    <a class="brand" href="index.html">
+      <span class="brand__glyph" aria-hidden="true">N</span>
+      <div class="brand__text">
+        <span class="brand__name">Negoria</span>
+        <span class="brand__sub">CAISE MERCADO</span>
+      </div>
+    </a>
+    <nav class="topnav">
+      <a href="index.html">&#8592; Negoria</a>
+      <a class="is-cta" href="modulo/market-monitor/index.html">Mercado Observatorio &#8594;</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="masthead">
+    <div class="eyebrow">La empresa · el agente de Negoria</div>
+    <h1>CAISE Mercado</h1>
+    <p class="lead">La operación agrícola y comercial en República Dominicana que Negoria observa, dirige y coordina — <strong>el agente del sistema</strong>.</p>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">01 · El agente</span><span class="figcap__rule"></span></div>
+    <div class="problem">CAISE Mercado es el <strong>agente</strong> del modelo: la empresa entendida como un <strong>sistema de control adaptativo</strong> operando dentro de un entorno cambiante — el sistema que Negoria mantiene viable.</div>
+    <p class="bodytext">En el marco del Modelo de Sistema Viable, la empresa no es un organigrama: es el conjunto de funciones —percibir, decidir, coordinar, operar— que deben ejecutarse sin pausa para permanecer viable. Negoria existe para que esas funciones se ejecuten explícitamente, con evidencia y a tiempo.</p>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">02 · La operación</span><span class="figcap__rule"></span></div>
+    <p class="defintro">Una operación agrícola y comercial, con dos caras y un lazo:</p>
+    <ul class="deflist">
+      <li><strong>Agrícola — la producción</strong>Los cultivos, sus ciclos y cosechas: la oferta que nace antes del mercado.</li>
+      <li><strong>Comercial — el intercambio</strong>La compra y la venta en los mercados donde la empresa compite.</li>
+      <li><strong>Servicio — la relación</strong>La interacción entidad &rarr; cliente: atención, entrega, postventa, respuesta.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">03 · Su entorno</span><span class="figcap__rule"></span></div>
+    <p class="defintro">El entorno que condiciona la viabilidad — y que la Inteligencia observa:</p>
+    <ul class="deflist">
+      <li><strong>Mercados agrícolas dominicanos</strong>Precios, plazas y competidores: el intercambio que el Mercado Observatorio representa.</li>
+      <li><strong>La base productiva</strong>Productores, ciclos y volúmenes — bienes y servicios — que anticipa el Observatorio de Producción.</li>
+      <li><strong>Clientes, proveedores y regulación</strong>Las reglas y los actores con los que la empresa coopera y negocia cada día.</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">04 · Mapeo al marco</span><span class="figcap__rule"></span></div>
+    <table class="ifaces">
+      <thead><tr><th>Función</th><th>Nivel VSM</th><th>Sistemas de Negoria</th></tr></thead>
+      <tbody>
+        <tr><td>Dirección</td><td>S5 · Política</td><td>Política Empresarial — próximamente</td></tr>
+        <tr><td>Observar y anticipar</td><td>S4 · Inteligencia</td><td>Observatorio de Producción · Mercado Observatorio (operativo) · Conocimiento</td></tr>
+        <tr><td>Dirigir y corregir</td><td>S3 · Control</td><td>Control · Recursos · Auditoría — próximamente</td></tr>
+        <tr><td>Sincronizar</td><td>S2 · Coordinación</td><td>Coordinación — próximamente</td></tr>
+        <tr><td>Producir valor</td><td>S1 · Operaciones</td><td>Operaciones — próximamente</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="figcap"><span class="figcap__tag">Estado</span><span class="figcap__rule"></span></div>
+    <div class="estado">
+      <p><strong>En operación.</strong> Negoria es su sistema de gestión integral — el modelo que la mantiene viable.</p>
+      <span class="estado__actions">
+        <a href="index.html">Volver a Negoria</a>
+        <a class="is-live" href="modulo/market-monitor/index.html">Abrir Mercado Observatorio &#8594;</a>
+      </span>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap foot__in">
+    <span class="foot__brand">NEGORIA · CAISE MERCADO</span>
+    <div class="foot__links">
+      <a href="index.html#anexo">Anexo</a>
+      <a href="spec/README.md">Documentación</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

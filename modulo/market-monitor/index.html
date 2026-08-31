@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mercado Observatorio — Bremontix</title>
+<meta name="description" content="Instrumento de observación, representación y comparación de mercados agrícolas.">
+<meta name="theme-color" content="#17181C">
+<meta property="og:title" content="Mercado Observatorio — Bremontix">
+<meta property="og:description" content="Instrumento de observación, representación y comparación de mercados agrícolas.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2317181C'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='Inter,Helvetica,Arial,sans-serif' font-size='16' font-weight='700' fill='%23C9E96E'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<noscript><div style="max-width:640px;margin:3rem auto;padding:1.2rem 1.4rem;border:1px solid #e7e8ee;border-left:3px solid #d84a42;border-radius:14px;font-family:Inter,Arial,sans-serif;font-size:1rem;color:#17181c;background:#fff">El Mercado Observatorio requiere JavaScript — toda la representación de datos ocurre en el navegador. Habilítalo y recarga la página.</div></noscript>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand__glyph" aria-hidden="true">B</span>
+      <div class="brand__text">
+        <span class="brand__name">Mercado Observatorio</span>
+        <span class="brand__sub">BREMONTIX</span>
+      </div>
+    </div>
+    <nav class="snav" id="snav"></nav>
+  </aside>
+  <div class="frame">
+    <header class="topbar">
+      <div class="topbar__in">
+        <div class="topbar__left">
+          <button class="menubtn" id="menubtn" type="button" title="Colapsar menú" aria-label="Colapsar menú"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11"/></svg></button>
+          <div class="crumb" id="crumb"></div>
+        </div>
+        <div class="topbar__right">
+          <span class="winchip" id="winchip" title="Ventana de datos — se configura en Herramientas"></span>
+          <div class="seg" id="geoseg" role="group" aria-label="Geografía">
+            <button class="seg__btn is-active" type="button" data-geo="nacional">Nacional</button>
+            <button class="seg__btn" type="button" data-geo="internacional">Internacional</button>
+          </div>
+          <div class="search">
+            <span class="search__glyph" aria-hidden="true"><svg viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.2"/><path d="M9.2 9.2 12 12"/></svg></span>
+            <input id="q" type="text" placeholder="Buscar categoría o producto…" autocomplete="off" spellcheck="false">
+            <span class="search__chip" id="searchchip" hidden><span class="search__chip-label" id="searchchip__label"></span><button class="search__x" id="searchx" type="button" title="Quitar nivel · volver a Todos" aria-label="Quitar nivel de datos"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 2l6 6M8 2 2 8"/></svg></button></span>
+            <span class="search__kbd">⌘K</span>
+            <div class="searchdd" id="searchdd" role="listbox"></div>
+          </div>
+          <a class="idbtn" href="#/cuenta" title="Cuenta" aria-label="Cuenta">B</a>
+        </div>
+      </div>
+      <span class="scrollprog" id="scrollprog" aria-hidden="true"></span>
+    </header>
+    <main class="view" id="view"></main>
+    <footer class="appfoot">
+      <div class="appfoot__in">
+        <span>Mercado Observatorio · Bremontix</span>
+        <span class="mono" id="footdate">20 AGO 2026 · 08:00 · Santo Domingo · RD · UTC−4</span>
+      </div>
+    </footer>
+  </div>
+</div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
