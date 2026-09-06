@@ -148,6 +148,7 @@
   let boardView = params.vista;
   const tfilter = { q: "", trend: "all" };
   const tsort = { key: "", dir: 1 };
+  const cstate = { q: "", cat: "all", trend: "all", sort: "", range: "todo" };
   let sqlLast = null;
   let viewClickBound = false;
   let colOpen = null;
@@ -157,6 +158,7 @@
 
   const ICO = {
     mercado: '<svg class="snav__icon" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M2.5 8h11M8 2c3.2 3.4 3.2 8.6 0 12M8 2c-3.2 3.4-3.2 8.6 0 12"/></svg>',
+    catalogo: '<svg class="snav__icon" viewBox="0 0 16 16"><rect x="2.5" y="2.5" width="4.6" height="4.6" rx="1.2"/><rect x="8.9" y="2.5" width="4.6" height="4.6" rx="1.2"/><rect x="2.5" y="8.9" width="4.6" height="4.6" rx="1.2"/><rect x="8.9" y="8.9" width="4.6" height="4.6" rx="1.2"/></svg>',
     productos: '<svg class="snav__icon" viewBox="0 0 16 16"><path d="M2.5 4.5h11M2.5 8h11M2.5 11.5h7"/></svg>',
     vegetales: '<svg class="snav__icon" viewBox="0 0 16 16"><path d="M13 3C7.5 3 4 6.2 4 10.5c0 1 .2 1.9.5 2.7.7.2 1.4.3 2.2.3C11 13.5 13 9.3 13 3z"/><path d="M4.5 13.5C6.8 9.8 9.4 7 12.6 4.6"/></svg>',
     viandas: '<svg class="snav__icon" viewBox="0 0 16 16"><ellipse cx="8" cy="9.4" rx="3.8" ry="4.8"/><path d="M8 4.6V2.4M6.2 5 4.6 3.4M9.8 5l1.6-1.6"/></svg>',
@@ -661,6 +663,7 @@
     const val = v => v ? `<span class="val${String(v).trim().startsWith("-") ? " is-down" : ""}">${v}</span>` : "";
     let html = sec("Mercado");
     html += `<a class="snav__item" data-route="mercado" href="#/mercado">${ICO.mercado}<span class="snav__label">Mercado</span></a>`;
+    html += `<a class="snav__item" data-route="catalogo" href="#/catalogo">${ICO.catalogo}<span class="snav__label">Catálogo</span></a>`;
     D.categorias.forEach(c => {
       html += `<a class="snav__item" data-route="categoria" data-cat="${c.id}" href="#/mercado/categoria/${c.id}">${ICO[c.id]}<span class="snav__label">${c.nombre}</span>${val(H.pct(H.varYTD(c.idx)))}</a>`;
     });
@@ -1196,12 +1199,7 @@
       },
       table: () => {
         const ms = activeMercados();
-        if (!ms.length) {
-          return `<div class="figcap"><span class="figcap__tag">Fig. 2</span><span class="figcap__caption">Precio por plaza — banda mín–máx, ◆ media, contra la media del agregado</span></div>
-      ${emptyBoxHTML(EMPTY_MSG, false)}
-      <div class="source">Fuente: red de plazas observadas · elaboración propia</div>
-      <p class="note">${EMPTY_MSG}</p>`;
-        }
+        if (!ms.length) return emptyBoxHTML(EMPTY_MSG, false);
         const media = H.mediaMercados(p, ms);
         const r = rangoP(p);
         const lo = r.mn, hi = r.mx, span = hi - lo;
@@ -1218,21 +1216,283 @@
         <td>${pos}</td>
       </tr>`;
         }).join("");
-        return `<div class="figcap"><span class="figcap__tag">Fig. 2</span><span class="figcap__caption">Precio por plaza — banda mín–máx, ◆ media, contra la media del agregado</span></div>
-      <div class="tablewrap"><table class="table">
+        return `<div class="tablewrap"><table class="table">
         <thead><tr><th>Plaza</th><th class="num">Medio RD$</th><th class="num">Mín–Máx</th><th>Rango</th><th class="num">vs media</th><th>Posición</th></tr></thead>
         <tbody>${trows}</tbody>
-      </table></div>
-      <div class="source">Fuente: red de plazas observadas · elaboración propia${plazaSub() ? plazaNote(ms) : ""}</div>
-      <p class="note">La media se construye agregando las ${ms.length} ${ms.length === 1 ? "plaza observada" : "plazas observadas"} — el mercado mismo sirve de referencia.</p>`;
-      }
+      </table></div>`;
+      },
+      produccion: () => produccionBody(p),
+      costos: () => costosBody(p),
+      postcosecha: () => postcosechaBody(p),
+      comercial: () => comercialBody(p),
+      proceso: () => procesoBody(p),
+      derivados: () => derivadosBody(p),
+      preguntas: () => preguntasBody(p)
     };
-    return pagehead(`<img class="pthumb pthumb--page" src="${p.img}" alt="">${p.nombre}`, null,
+    const src = H.fuente(p.id);
+    const srcChip = src ? `<a class="chip chip--link" href="${escAttr(src)}" target="_blank" rel="noopener" title="Fuente de observación — SupermercadosRD">fuente · supermercadosrd.com</a>` : null;
+    const msN = activeMercados().length;
+    const sechead = (tag, cap) => `<div class="figcap figcap--section"><span class="figcap__tag">${tag}</span><span class="figcap__caption">${cap}</span></div>`;
+    const plazasNote = msN ? `<p class="note">La media se construye agregando las ${msN} ${msN === 1 ? "plaza observada" : "plazas observadas"} — el mercado mismo sirve de referencia.</p>` : "";
+    return pagehead(`<img class="pthumb pthumb--page" src="${p.img}" alt="">${p.nombre}`, srcChip,
       `<em>${p.nombre}</em> — una sola pieza observada: su precio corriente y su rango entre plazas.`) +
-      pagenavHTML([["sec-resumen", "Resumen"], ["sec-evolucion", "Evolución"], ["sec-plazas", "Plazas"]]) +
+      pagenavHTML([["sec-resumen", "Resumen"], ["sec-evolucion", "Evolución"], ["sec-plazas", "Plazas"], ["sec-produccion", "Producción"], ["sec-cadena", "Cadena"], ["sec-proceso", "Procesamiento"], ["sec-derivados", "Derivados"], ["sec-preguntas", "Preguntas"], ["sec-referencia", "Referencia"]]) +
       `<div id="sec-resumen" data-q="stats">${skelStats()}</div>` +
       `<div id="sec-evolucion" data-q="fig">${skelFig()}</div>` +
-      `<div id="sec-plazas" data-q="table">${skelTable()}</div>`;
+      `<div id="sec-plazas">${sechead("Plazas", "Fig. 2 — precio por plaza: banda mín–máx, ◆ media, contra la media del agregado")}<div data-q="table">${skelRows(6)}</div></div>${plazasNote}` +
+      `<div id="sec-produccion">${sechead("Producción", "Fig. 3 — zonas, zafra, sistema, ciclo y rendimiento")}<div data-q="produccion">${skelRows(5)}</div></div>` +
+      `<div id="sec-cadena">` +
+        sechead("Cadena", "costos de producción, post-cosecha y comercialización — Figs. 4–6") +
+        `<div><div class="figcap figcap--block"><span class="figcap__tag">Fig. 4</span><span class="figcap__caption">Costos de producción — estructura por partida</span></div><div data-q="costos">${skelChain()}</div></div>` +
+        `<div><div class="figcap figcap--block"><span class="figcap__tag">Fig. 5</span><span class="figcap__caption">Post-cosecha y conservación</span></div><div data-q="postcosecha">${skelRows(5)}</div></div>` +
+        `<div><div class="figcap figcap--block"><span class="figcap__tag">Fig. 6</span><span class="figcap__caption">Comercialización — canales de colocación</span></div><div data-q="comercial">${skelChain()}</div></div>` +
+      `</div>` +
+      `<div id="sec-proceso">${sechead("Procesamiento", "Fig. 7 — nivel y formas")}<div data-q="proceso">${skelChipsRow()}</div></div>` +
+      `<div id="sec-derivados">${sechead("Derivados", "Fig. 8 — productos derivados")}<div data-q="derivados">${skelChipsRow()}</div></div>` +
+      `<div id="sec-preguntas">${sechead("Preguntas", "preguntas frecuentes de este producto")}<div data-q="preguntas">${skelQA()}</div></div>` +
+      `<div id="sec-referencia">${sechead("Referencia", "fuentes y naturaleza de los datos")}<ol class="refs">
+        <li>Red de plazas observadas — precios en RD$/unidad · elaboración propia · datos ilustrativos.</li>
+        ${src ? `<li><a href="${escAttr(src)}" target="_blank" rel="noopener">SupermercadosRD</a> — observación minorista del grupo <span class="mono">${escHTML(src.replace(/^https:\/\/supermercadosrd\.com\//, ""))}</span>.</li>` : ""}
+      </ol></div>`;
+  }
+
+  const CRANGE_N = { "1m": 2, "6m": 6, ytd: 8, "1a": 8, todo: 8 };
+
+  function catalogoFilterActive() { return !!(cstate.q.trim() || cstate.cat !== "all" || cstate.trend !== "all" || cstate.sort); }
+
+  function catalogoProds() {
+    let prods = D.productos;
+    if (cstate.cat !== "all") prods = prods.filter(p => p.cat === cstate.cat);
+    if (cstate.trend !== "all") {
+      prods = prods.filter(p => {
+        const t = H.tendencia(p);
+        return cstate.trend === "up" ? t === "ascendente" : cstate.trend === "down" ? t === "descendente" : t === "estable";
+      });
+    }
+    const nq = norm(cstate.q.trim());
+    if (nq) prods = prods.filter(p => norm(p.nombre).includes(nq) || norm(H.cat(p.cat).nombre).includes(nq));
+    if (cstate.sort === "nombre") prods = prods.slice().sort((a, b) => a.nombre.localeCompare(b.nombre, "es"));
+    else if (cstate.sort) prods = prods.slice().sort((a, b) => sortVal(a, cstate.sort) - sortVal(b, cstate.sort));
+    return prods;
+  }
+
+  function cardSerie(p) {
+    if (scope === "nacional" && plazaSub()) {
+      const ms = activeMercados();
+      return D.meses.map((_, i) => +(ms.reduce((a, m) => a + plazaSerie(p.serie, p.mercados[m.id][2], p.id + m.id)[i], 0) / ms.length).toFixed(2));
+    }
+    return p.serie;
+  }
+
+  function cardSpark(p) {
+    const data = cardSerie(p).slice(-(CRANGE_N[cstate.range] || 8));
+    return spark(data, H.tendencia(p) === "descendente" ? BAJA : STEEL, 216, 40);
+  }
+
+  function gcard(p) {
+    const c = H.cat(p.cat);
+    const sub = plazaSub();
+    const ms = activeMercados();
+    const intl = scope === "internacional";
+    const price = intl || !sub ? H.actual(p) : H.mediaMercados(p, ms);
+    const d = H.deltaSem(p);
+    const r = rangoP(p);
+    const head = `<div class="gcard__head"><img class="pthumb" src="${p.img}" alt="" loading="lazy"><div class="gcard__id"><span class="gcard__name">${p.nombre}</span><span class="gcard__cat">${c.nombre}</span></div>${trendBadge(H.tendencia(p))}</div>`;
+    const priceHTML = `<div class="gcard__price"><span class="gcard__val">${H.fmtRD(price)}</span>${deltaHTML(d, 2)}<span class="gcard__unit">sem</span></div>
+      <div class="gcard__meta">${intl ? `serie nacional · RD$/${p.unidad}` : sub ? `media · ${ms.length} ${ms.length === 1 ? "plaza" : "plazas"} · RD$/${p.unidad}` : `RD$/${p.unidad}`}</div>`;
+    const foot = intl
+      ? `<div class="gcard__foot"><span class="chip">intl ${H.fmtRD(p.intl)}</span><span class="gcard__gap"><span class="mono ${H.primaIntl(p) >= 0 ? "delta-up" : "delta-down"}">${H.pct(H.primaIntl(p))}</span> prima</span></div>`
+      : `<div class="gcard__foot"><span class="chip">vol ${(+p.vol).toFixed(1)}</span><span class="gcard__range mono">${r.mn == null ? "—" : H.fmtN(r.mn) + "–" + H.fmtN(r.mx)}</span></div>`;
+    return `<a class="gcard" href="#/mercado/producto/${p.id}" title="Abrir ${escAttr(p.nombre)}">${head}${priceHTML}<div class="gcard__spark" title="${escAttr(sparkTitle(p))}">${cardSpark(p)}</div>${foot}</a>`;
+  }
+
+  function catalogoBarHTML() {
+    const fa = catalogoFilterActive();
+    const meta = fa ? `${catalogoProds().length} de ${D.productos.length} productos` : `${D.productos.length} productos`;
+    const cats = [["all", "Todos"]].concat(D.categorias.map(c => [c.id, c.nombre]));
+    const trends = [["all", "Todos"], ["up", "<span class='tu'>▲</span> Alza"], ["down", "<span class='td'>▼</span> Baja"], ["flat", "<span class='tf'>—</span> Estable"]];
+    const sorts = [["", "Relevancia"], ["nombre", "Nombre"], ["precio", "Precio"], ["dsem", "Δ sem"], ["vol", "Vol"]];
+    const ranges = [["1m", "1M"], ["6m", "6M"], ["ytd", "YTD"], ["1a", "1A"], ["todo", "Todo"]];
+    return `<div class="tablebar">
+      <span class="tq-wrap${cstate.q ? " has-val" : ""}"><span class="tq-glyph" aria-hidden="true"><svg viewBox="0 0 14 14"><circle cx="6" cy="6" r="4.2"/><path d="M9.2 9.2 12 12"/></svg></span><input class="tq" id="cq" type="text" placeholder="Filtrar producto…" value="${escAttr(cstate.q)}" autocomplete="off" spellcheck="false"><button class="tq-x" id="cqx" type="button" title="Limpiar filtro" aria-label="Limpiar filtro de producto" ${cstate.q ? "" : "hidden"}><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 2l6 6M8 2 2 8"/></svg></button></span>
+      <span class="tchips" id="ccat">${cats.map(t => `<button class="tchip${cstate.cat === t[0] ? " is-active" : ""}" type="button" data-ccat="${t[0]}">${t[1]}</button>`).join("")}</span>
+      <span class="tchips" id="ctrend">${trends.map(t => `<button class="tchip${cstate.trend === t[0] ? " is-active" : ""}" type="button" data-ctrend="${t[0]}">${t[1]}</button>`).join("")}</span>
+      <span class="tablebar__meta" id="cbar-meta">${meta}</span>
+      <div class="tablebar__actions">
+        <span class="tchips" id="csort">${sorts.map(t => `<button class="tchip${cstate.sort === t[0] ? " is-active" : ""}" type="button" data-csort="${t[0]}" title="Ordenar por ${t[1]}">${t[1]}</button>`).join("")}</span>
+        <span class="rangetabs" id="crangetabs" title="Ventana del historial en la tarjeta">${ranges.map(o => `<button class="rangetab${cstate.range === o[0] ? " is-active" : ""}" type="button" data-crange="${o[0]}">${o[1]}</button>`).join("")}</span>
+      </div>
+    </div>`;
+  }
+
+  function catalogoGrid() {
+    if (plazaEmpty()) {
+      return emptyBoxHTML(EMPTY_MSG, false) +
+        `<div class="source">Fuente: red de plazas observadas · elaboración propia</div>`;
+    }
+    const prods = catalogoProds();
+    if (!prods.length) return emptyBoxHTML("Sin productos para el filtro actual.", true);
+    return `<div class="gcards">${prods.map(gcard).join("")}</div>
+      <div class="source">Precios RD$/unidad · historial de 8 meses · datos ilustrativos · Fuente: red de plazas observadas · elaboración propia${plazaSub() ? plazaNote(activeMercados()) : ""}</div>`;
+  }
+
+  function skelCatalogo() {
+    const card = `<div class="gcard gcard--skel"><span class="skel skel--label" style="width:58%"></span><span class="skel skel--num" style="width:44%"></span><span class="skel" style="height:40px;border-radius:7px"></span></div>`;
+    return `<div class="gcards">${card.repeat(8)}</div>`;
+  }
+
+  function vCatalogo() {
+    qMap = { cards: () => catalogoGrid() };
+    const scoped = scope === "internacional";
+    const tags = [`${D.productos.length} productos`, scoped ? "referencia internacional" : `${activeMercados().length} plazas`];
+    const chips = `<span class="chips">${tags.map(t => `<span class="chip">${t}</span>`).join("")}</span>`;
+    return pagehead("Catálogo", chips,
+      scoped
+        ? `El catálogo completo del mercado contra la <em>referencia internacional</em> — cada tarjeta lleva su historial de precio y abre la ficha del producto.`
+        : `El catálogo completo del mercado — cada tarjeta lleva su <em>historial de precio</em> bajo los filtros de datos y abre la ficha del producto.`) +
+      pagenavHTML([["sec-catalogo", "Catálogo"]]) +
+      `<div id="sec-catalogo"><div id="catalogo-module">${tmoduleHTML(catalogoBarHTML(), `<div id="catalogo-grid" data-q="cards">${skelCatalogo()}</div>`)}</div></div>`;
+  }
+
+  function catalogoMeta() {
+    const el = document.getElementById("cbar-meta");
+    if (el) el.textContent = catalogoFilterActive() ? `${catalogoProds().length} de ${D.productos.length} productos` : `${D.productos.length} productos`;
+  }
+
+  function catalogoSwapGrid() {
+    const host = document.getElementById("catalogo-grid");
+    if (!host) { route(); return; }
+    host.innerHTML = catalogoGrid();
+    const cclear = document.getElementById("clear-filters");
+    if (cclear) cclear.addEventListener("click", () => { cstate.q = ""; cstate.cat = "all"; cstate.trend = "all"; updateCatalogo(); });
+  }
+
+  function updateCatalogo() {
+    const host = document.getElementById("catalogo-module");
+    if (!host) { route(); return; }
+    host.innerHTML = tmoduleHTML(catalogoBarHTML(), `<div id="catalogo-grid">${catalogoGrid()}</div>`);
+    bindCatalogo();
+  }
+
+  function bindCatalogo() {
+    const cq = document.getElementById("cq");
+    if (cq) cq.addEventListener("input", () => {
+      cstate.q = cq.value;
+      const wrap = cq.closest(".tq-wrap");
+      if (wrap) wrap.classList.toggle("has-val", !!cstate.q);
+      const x = document.getElementById("cqx");
+      if (x) x.hidden = !cstate.q;
+      catalogoMeta();
+      catalogoSwapGrid();
+    });
+    const cqx = document.getElementById("cqx");
+    if (cqx) cqx.addEventListener("click", () => { cstate.q = ""; updateCatalogo(); });
+    const click = (id, attr, apply) => {
+      const host = document.getElementById(id);
+      if (host) host.addEventListener("click", e => {
+        const b = e.target.closest(`[data-${attr}]`);
+        if (!b) return;
+        apply(b.getAttribute(`data-${attr}`));
+        updateCatalogo();
+      });
+    };
+    click("ccat", "ccat", v => { cstate.cat = v; });
+    click("ctrend", "ctrend", v => { cstate.trend = v; });
+    click("csort", "csort", v => { cstate.sort = v; });
+    click("crangetabs", "crange", v => { cstate.range = v; });
+    const cclear = document.getElementById("clear-filters");
+    if (cclear) cclear.addEventListener("click", () => { cstate.q = ""; cstate.cat = "all"; cstate.trend = "all"; updateCatalogo(); });
+  }
+
+  function figtable(head, rows) {
+    return `<div class="tablewrap"><table class="table"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+
+  function figrow(k, v) { return `<tr><td>${k}</td><td>${v}</td></tr>`; }
+
+  function figkv(items) {
+    return `<div class="chainkv">${items.map(i => `<div class="chainkv__item"><span class="chainkv__k">${i[0]}</span><span class="chainkv__v mono">${i[1]}</span></div>`).join("")}</div>`;
+  }
+
+  function produccionBody(p) {
+    const f = H.ficha(p.id);
+    if (!f) return emptyBoxHTML("Sin ficha de producción para este producto.", false);
+    const ciclo = typeof f.prod.ciclo === "number" ? `${f.prod.ciclo} días` : f.prod.ciclo;
+    return figtable("<th>Zona / condición</th><th>Detalle</th>",
+      figrow("Zonas de producción", `<span class="chips">${f.prod.zonas.map(z => `<span class="chip">${z}</span>`).join("")}</span>`) +
+      figrow("Zafra", f.prod.zafra) +
+      figrow("Sistema", f.prod.sistema) +
+      figrow("Ciclo", ciclo) +
+      figrow("Rendimiento", f.prod.rendimiento));
+  }
+
+  function costosBody(p) {
+    const f = H.ficha(p.id);
+    if (!f) return emptyBoxHTML("Sin ficha de costos para este producto.", false);
+    const maxP = Math.max(...f.costos.partidas.map(x => x[1]));
+    return figkv([
+      ["Costo total", `${H.fmtRD(f.costos.total)}<span class="chainkv__u">/${p.unidad}</span>`],
+      ["Precio corriente", `${H.fmtRD(H.actual(p))}<span class="chainkv__u">/${p.unidad}</span>`],
+      ["Margen bruto", H.pct(f.costos.margen)]
+    ]) +
+      figtable('<th>Partida</th><th class="num">Peso</th><th>Distribución</th>',
+        f.costos.partidas.map(x => `<tr><td>${x[0]}</td><td class="num">${x[1]}%</td><td><div class="mtrack"><div class="mband" style="left:0;width:${(x[1] / maxP * 100).toFixed(1)}%"></div></div></td></tr>`).join(""));
+  }
+
+  function postcosechaBody(p) {
+    const f = H.ficha(p.id);
+    if (!f) return emptyBoxHTML("Sin ficha de conservación para este producto.", false);
+    return figtable("<th>Condición</th><th>Valor</th>",
+      figrow("Vida útil", `${f.post.vida} días`) +
+      figrow("Temperatura", f.post.temp) +
+      figrow("Humedad", f.post.hum) +
+      figrow("Manejo", f.post.manejo) +
+      figrow("Pérdidas", `${f.post.perdidas.toFixed(1)}% del volumen manejado`));
+  }
+
+  function comercialBody(p) {
+    const f = H.ficha(p.id);
+    if (!f) return emptyBoxHTML("Sin ficha de comercialización para este producto.", false);
+    const maxC = Math.max(...f.com.canales.map(x => x[1]));
+    return figkv([["Margen bruto del canal", H.pct(f.com.margen)]]) +
+      figtable('<th>Canal</th><th class="num">Participación</th><th>Distribución</th>',
+        f.com.canales.map(x => `<tr><td>${x[0]}</td><td class="num">${x[1]}%</td><td><div class="mtrack"><div class="mband" style="left:0;width:${(x[1] / maxC * 100).toFixed(1)}%"></div></div></td></tr>`).join(""));
+  }
+
+  function procesoBody(p) {
+    const f = H.ficha(p.id);
+    if (!f) return emptyBoxHTML("Sin ficha de procesamiento para este producto.", false);
+    return `<div class="chainrow"><span class="pill pill--flat">${f.proc.nivel}</span><span class="chips">${f.proc.formas.length ? f.proc.formas.map(x => `<span class="chip">${x}</span>`).join("") : `<span class="chip">sin procesamiento local</span>`}</span></div>`;
+  }
+
+  function derivadosBody(p) {
+    const f = H.ficha(p.id);
+    if (!f) return emptyBoxHTML("Sin ficha de derivados para este producto.", false);
+    return f.derivados.length
+      ? `<div class="chips chainrow">${f.derivados.map(x => `<span class="chip">${x}</span>`).join("")}</div>`
+      : emptyBoxHTML("Sin derivados locales identificados.", false);
+  }
+
+  function preguntasBody(p) {
+    const pairs = QAS[p.id] || [];
+    if (!pairs.length) return emptyBoxHTML("Sin preguntas frecuentes para este producto.", false);
+    return `<div class="qa">${pairs.map(x => `<details class="qa__item"><summary class="qa__q">${x[0]}</summary><div class="qa__a">${x[1]}</div></details>`).join("")}</div>`;
+  }
+
+  function skelRows(n) {
+    return `<div style="padding:0.15rem 0;display:flex;flex-direction:column;gap:0.4rem">${`<span class="skel skel--row"></span>`.repeat(n)}</div>`;
+  }
+
+  function skelChain() {
+    return `<div style="display:flex;gap:1.4rem;padding:0.2rem 0 0.6rem"><span class="skel skel--num" style="width:90px;margin-top:0"></span><span class="skel skel--num" style="width:90px;margin-top:0"></span><span class="skel skel--num" style="width:90px;margin-top:0"></span></div>` + skelRows(6);
+  }
+
+  function skelChipsRow() {
+    return `<div style="display:flex;gap:0.4rem;padding:0.35rem 0"><span class="skel skel--label" style="width:110px"></span><span class="skel skel--label" style="width:90px"></span><span class="skel skel--label" style="width:130px"></span></div>`;
+  }
+
+  function skelQA() {
+    return `<div style="display:flex;flex-direction:column;gap:0.45rem;padding:0.2rem 0">${`<span class="skel skel--row" style="height:2.6rem"></span>`.repeat(3)}</div>`;
   }
 
   function benchPicks() { return bench.picks.filter(id => id !== bench.comp); }
@@ -1808,6 +2068,27 @@
       `<p class="note"><a href="#/metodo">← volver a Método</a></p>`;
   }
 
+  function metodoFuentesHTML() {
+    const grupos = {};
+    D.productos.forEach(p => {
+      const u = H.fuente(p.id);
+      if (u) (grupos[u] = grupos[u] || []).push(p);
+    });
+    const rows = Object.entries(grupos).map(([u, ps]) => {
+      const slug = u.replace(/^https:\/\/supermercadosrd\.com\//, "");
+      const c = H.cat(ps[0].cat);
+      return `<tr>
+        <td><a href="${escAttr(u)}" target="_blank" rel="noopener" title="Abrir el grupo en SupermercadosRD">${escHTML(slug)}</a></td>
+        <td><a class="cat-link" href="#/mercado/categoria/${c.id}">${c.nombre}</a></td>
+        <td>${ps.map(p => `<a href="#/mercado/producto/${p.id}">${p.nombre}</a>`).join(" · ")}</td>
+      </tr>`;
+    }).join("");
+    return `<div class="tablewrap"><table class="table is-dense">
+      <thead><tr><th>Grupo observado</th><th>Categoría</th><th>Productos del catálogo</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`;
+  }
+
   function vMetodo() {
     return `<div class="metodo">` +
       pagehead("Método") +
@@ -1831,6 +2112,11 @@
 
       <div class="figcap figcap--section"><span class="figcap__tag">Benchmark</span><span class="figcap__caption">transversal a las seis combinaciones</span></div>
       <div class="mbench">Una plaza contra otra, contra un subconjunto de plazas —que puede ser el todo—, o contra el mercado agregado.</div>
+
+      <div class="figcap figcap--section"><span class="figcap__tag">Fuentes de observación</span><span class="figcap__caption">la referencia minorista del catálogo</span></div>
+      <p class="lead">La observación minorista del catálogo se ancla en <a href="https://supermercadosrd.com" target="_blank" rel="noopener">SupermercadosRD</a> — un comparador independiente que reúne los precios de las principales cadenas de supermercados del país. Cada grupo observado alimenta la referencia de sus productos; el vínculo vive además en la ficha de cada producto.</p>
+      ${metodoFuentesHTML()}
+      <p class="note">El sitio observa además grupos fuera del catálogo actual — chinola, mango, uva, berro, tayota, guineo maduro, vegetales congelados — y presentaciones procesadas puntuales (<a href="https://supermercadosrd.com/productos/ensalada-frutas-porcionada/1818" target="_blank" rel="noopener">ensalada porcionada</a>, <a href="https://supermercadosrd.com/productos/ensalada-mixta-de-frutas/42468" target="_blank" rel="noopener">ensalada mixta</a>, <a href="https://supermercadosrd.com/productos/ensalada-de-frutas-mixtas/1429" target="_blank" rel="noopener">ensalada de frutas mixtas</a>).</p>
 
       <p class="note">La dinámica describe cómo se comporta una propiedad del mercado a través del tiempo; el estado describe la condición corriente. Cifras ilustrativas.</p>
 
@@ -2219,7 +2505,7 @@
     qMap = null;
     const seg = location.hash.replace(/^#\/?/, "").split("/");
     const sp = document.getElementById("scrollprog");
-    const dataScope = !seg[0] || seg[0] === "mercado" || seg[0] === "internacional";
+    const dataScope = !seg[0] || seg[0] === "mercado" || seg[0] === "internacional" || seg[0] === "catalogo";
     if (sp) sp.style.display = dataScope ? "" : "none";
     const geoseg = document.getElementById("geoseg");
     if (geoseg) geoseg.style.display = dataScope ? "" : "none";
@@ -2253,6 +2539,7 @@
       scope = "internacional";
       html = vBoard();
     }
+    else if (seg[0] === "catalogo") { html = vCatalogo(); title = "Catálogo"; crumb = ["Catálogo"]; active = "catalogo"; }
     else if (seg[0] === "benchmark") { html = vBenchmark(); title = "Benchmark"; crumb = ["Benchmark"]; active = "benchmark"; }
     else if (seg[0] === "herramientas") {
       if (seg[1] === "coleccion") {
@@ -2388,7 +2675,7 @@
   let spy = null;
   function bindPagenav() {
     const nav = document.getElementById("pagenav");
-    if (spy) { spy.disconnect(); spy = null; }
+    if (spy) { window.removeEventListener("scroll", spy); window.removeEventListener("resize", spy); spy = null; }
     if (!nav) return;
     document.documentElement.style.setProperty("--pagenav-h", nav.offsetHeight + "px");
     nav.addEventListener("click", e => {
@@ -2399,14 +2686,17 @@
     });
     const links = [...nav.querySelectorAll(".pagenav__link")];
     const secs = links.map(l => document.getElementById(l.getAttribute("data-jump"))).filter(Boolean);
-    if (!secs.length || !("IntersectionObserver" in window)) return;
-    spy = new IntersectionObserver(entries => {
-      entries.forEach(en => {
-        if (!en.isIntersecting) return;
-        links.forEach(l => l.classList.toggle("is-active", l.getAttribute("data-jump") === en.target.id));
-      });
-    }, { rootMargin: "-30% 0px -60% 0px", threshold: 0 });
-    secs.forEach(s => spy.observe(s));
+    if (!secs.length) return;
+    const compute = () => {
+      const line = nav.getBoundingClientRect().bottom + 28;
+      let act = secs[0];
+      for (const s of secs) { if (s.getBoundingClientRect().top <= line) act = s; }
+      links.forEach(l => l.classList.toggle("is-active", l.getAttribute("data-jump") === act.id));
+    };
+    spy = compute;
+    window.addEventListener("scroll", compute, { passive: true });
+    window.addEventListener("resize", compute);
+    compute();
   }
 
   function bindRangetabs() {
@@ -2537,6 +2827,7 @@
     const rangetabs = document.getElementById("rangetabs");
     if (rangetabs) bindRangetabs();
     bindBoardTable();
+    bindCatalogo();
     // Colección — Gestionar: dropzone + carga + pipeline simulado (luego backend)
     const drop = document.getElementById("col-drop");
     const dropInput = document.getElementById("p-carga-file");
@@ -2918,6 +3209,7 @@
       return "Mercado Nacional";
     }
     if (seg[0] === "internacional") return "Mercado Internacional";
+    if (seg[0] === "catalogo") return "Catálogo";
     if (seg[0] === "benchmark") return "Benchmark";
     if (seg[0] === "herramientas") {
       if (seg[1] === "coleccion") return seg[2] === "gestionar" ? "Colección — Gestionar" : "Colección — Consultar";

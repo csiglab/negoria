@@ -149,11 +149,828 @@ const D = {
   volIntlTomate: 7.1
 };
 
+const FICHAS = {
+  "cebolla-blanca": {
+    prod: { zonas: ["San José de Ocoa", "Valle del Cibao", "San Juan"], zafra: "NOV–ABR", sistema: "riego", ciclo: 120, rendimiento: "18,000 lb/ha" },
+    costos: { total: 26.8, margen: 26.2, partidas: [["Semilla", 14], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 10], ["Transporte", 16], ["Otros", 12]] },
+    post: { vida: 30, temp: "4–8 °C", hum: "65–70 %", manejo: "curado en campo · mallas de 50 lb", perdidas: 9.2 },
+    com: { canales: [["Mayorista", 52], ["Minorista", 30], ["Industria", 10], ["Exportación", 8]], margen: 24.8 },
+    proc: { nivel: "fresco", formas: ["deshidratada en escamas", "conservas"] },
+    derivados: ["Cebolla deshidratada", "Sopas instantáneas", "Conservas encurtidas"]
+  },
+  "name": {
+    prod: { zonas: ["San José de Ocoa", "Azua", "San Juan"], zafra: "todo el año", sistema: "secano", ciclo: 270, rendimiento: "9,000 lb/ha" },
+    costos: { total: 12.9, margen: 27.9, partidas: [["Semilla", 18], ["Mano de obra", 32], ["Tutores", 12], ["Fertilizante", 12], ["Transporte", 16], ["Otros", 10]] },
+    post: { vida: 60, temp: "13–15 °C", hum: "70–80 %", manejo: "curado · cajas ventiladas", perdidas: 8.4 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 38], ["Exportación", 10], ["Industria", 6]], margen: 22.6 },
+    proc: { nivel: "fresco", formas: ["congelado pelado", "harina"] },
+    derivados: ["Ñame congelado", "Harina de ñame"]
+  },
+  "batata": {
+    prod: { zonas: ["San Cristóbal", "Peravia", "Azua"], zafra: "todo el año", sistema: "riego", ciclo: 110, rendimiento: "14,000 lb/ha" },
+    costos: { total: 63.4, margen: 27.4, partidas: [["Semilla", 16], ["Mano de obra", 28], ["Fertilizante", 18], ["Riego", 10], ["Transporte", 16], ["Otros", 12]] },
+    post: { vida: 25, temp: "13–15 °C", hum: "75–85 %", manejo: "clasificación por calibre · cajas", perdidas: 8.9 },
+    com: { canales: [["Mayorista", 44], ["Minorista", 34], ["Industria", 12], ["Exportación", 10]], margen: 23.4 },
+    proc: { nivel: "fresco", formas: ["batata asada", "puré congelado", "harina"] },
+    derivados: ["Batata asada lista", "Puré congelado", "Harina de batata"]
+  },
+  "yautia-amarilla": {
+    prod: { zonas: ["San José de Ocoa", "San Juan", "Bahoruco"], zafra: "todo el año", sistema: "secano", ciclo: 300, rendimiento: "11,000 lb/ha" },
+    costos: { total: 40.7, margen: 27.1, partidas: [["Semilla", 20], ["Mano de obra", 30], ["Fertilizante", 14], ["Transporte", 18], ["Otros", 18]] },
+    post: { vida: 45, temp: "7–10 °C", hum: "70–80 %", manejo: "selección · sacos ventilados", perdidas: 9.6 },
+    com: { canales: [["Mayorista", 50], ["Minorista", 36], ["Exportación", 14]], margen: 21.8 },
+    proc: { nivel: "fresco", formas: ["congelado pelado"] },
+    derivados: ["Yautía congelada", "Viandas mixtas congeladas"]
+  },
+  "yuca": {
+    prod: { zonas: ["Hato Mayor", "Monte Plata", "San Juan"], zafra: "todo el año", sistema: "secano", ciclo: 270, rendimiento: "16,000 lb/ha" },
+    costos: { total: 51.2, margen: 27.3, partidas: [["Semilla", 14], ["Mano de obra", 30], ["Fertilizante", 14], ["Transporte", 20], ["Riego", 8], ["Otros", 14]] },
+    post: { vida: 5, temp: "ambiente fresco", hum: "60–70 %", manejo: "desenterrado a demanda · cera en raíces seleccionadas", perdidas: 12.4 },
+    com: { canales: [["Mayorista", 40], ["Industria", 26], ["Minorista", 24], ["Exportación", 10]], margen: 24.2 },
+    proc: { nivel: "fresco · procesado", formas: ["casabe", "almidón", "yuca congelada"] },
+    derivados: ["Casabe", "Almidón de yuca", "Yuca congelada", "Tapioca"]
+  },
+  "jengibre": {
+    prod: { zonas: ["Jarabacoa", "Constanza"], zafra: "DIC–MAY", sistema: "riego", ciclo: 300, rendimiento: "12,000 lb/ha" },
+    costos: { total: 69.6, margen: 27.3, partidas: [["Semilla", 22], ["Mano de obra", 26], ["Fertilizante", 16], ["Riego", 10], ["Transporte", 14], ["Otros", 12]] },
+    post: { vida: 21, temp: "10–13 °C", hum: "75–85 %", manejo: "lavado y selección · cajas", perdidas: 9.8 },
+    com: { canales: [["Mayorista", 38], ["Exportación", 30], ["Minorista", 22], ["Industria", 10]], margen: 25.4 },
+    proc: { nivel: "fresco · procesado", formas: ["deshidratado", "cerveza de jengibre", "té"] },
+    derivados: ["Jengibre deshidratado", "Ginger beer", "Infusiones"]
+  },
+  "yautia-coco": {
+    prod: { zonas: ["San José de Ocoa", "San Juan"], zafra: "todo el año", sistema: "secano", ciclo: 290, rendimiento: "10,500 lb/ha" },
+    costos: { total: 36.3, margen: 27.0, partidas: [["Semilla", 20], ["Mano de obra", 30], ["Fertilizante", 14], ["Transporte", 18], ["Otros", 18]] },
+    post: { vida: 40, temp: "7–10 °C", hum: "70–80 %", manejo: "sacos ventilados", perdidas: 9.4 },
+    com: { canales: [["Mayorista", 50], ["Minorista", 38], ["Exportación", 12]], margen: 22.1 },
+    proc: { nivel: "fresco", formas: ["congelado pelado"] },
+    derivados: ["Yautía congelada"]
+  },
+  "remolacha": {
+    prod: { zonas: ["Constanza", "Jarabacoa"], zafra: "NOV–ABR", sistema: "riego", ciclo: 90, rendimiento: "15,000 lb/ha" },
+    costos: { total: 39.6, margen: 27.2, partidas: [["Semilla", 14], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 12], ["Transporte", 14], ["Otros", 12]] },
+    post: { vida: 35, temp: "0–4 °C", hum: "90–95 %", manejo: "corte de follaje · bolsas perforadas", perdidas: 8.1 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 38], ["Industria", 10], ["Exportación", 6]], margen: 23.9 },
+    proc: { nivel: "fresco", formas: ["enlatada", "jugo"] },
+    derivados: ["Remolacha encurtida", "Jugo de remolacha"]
+  },
+  "zanahoria": {
+    prod: { zonas: ["Constanza", "Jarabacoa"], zafra: "todo el año", sistema: "riego", ciclo: 110, rendimiento: "18,000 lb/ha" },
+    costos: { total: 40.9, margen: 27.0, partidas: [["Semilla", 15], ["Fertilizante", 20], ["Mano de obra", 27], ["Riego", 12], ["Transporte", 14], ["Otros", 12]] },
+    post: { vida: 30, temp: "0–4 °C", hum: "90–95 %", manejo: "lavado · bolsas", perdidas: 8.7 },
+    com: { canales: [["Mayorista", 44], ["Minorista", 36], ["Industria", 14], ["Exportación", 6]], margen: 24.6 },
+    proc: { nivel: "fresco · procesado", formas: ["jugo", "congelada rallada"] },
+    derivados: ["Jugo de zanahoria", "Zanahoria congelada"]
+  },
+  "papa": {
+    prod: { zonas: ["Constanza", "San José de Ocoa", "San Juan"], zafra: "DIC–MAR", sistema: "riego", ciclo: 100, rendimiento: "16,000 lb/ha" },
+    costos: { total: 36.4, margen: 27.2, partidas: [["Semilla certificada", 24], ["Fertilizante", 18], ["Mano de obra", 24], ["Riego", 10], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 90, temp: "8–12 °C", hum: "85–90 %", manejo: "curado 2 semanas · bodega ventilada", perdidas: 7.8 },
+    com: { canales: [["Mayorista", 42], ["Minorista", 38], ["Industria", 20]], margen: 23.8 },
+    proc: { nivel: "fresco · procesado", formas: ["papas fritas", "puré instantáneo"] },
+    derivados: ["Papas fritas en bolsa", "Puré instantáneo"]
+  },
+  "berenjena": {
+    prod: { zonas: ["La Vega", "Bonao", "San Cristóbal"], zafra: "todo el año", sistema: "riego", ciclo: 95, rendimiento: "22,000 lb/ha" },
+    costos: { total: 27.8, margen: 26.8, partidas: [["Semilla", 16], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 10], ["Transporte", 14], ["Otros", 12]] },
+    post: { vida: 14, temp: "8–12 °C", hum: "85–90 %", manejo: "empaque en cajas", perdidas: 9.1 },
+    com: { canales: [["Mayorista", 44], ["Exportación", 22], ["Minorista", 24], ["Industria", 10]], margen: 24.1 },
+    proc: { nivel: "fresco", formas: ["encurtidos", "congelada"] },
+    derivados: ["Berenjena encurtida"]
+  },
+  "apio": {
+    prod: { zonas: ["Constanza"], zafra: "todo el año", sistema: "riego", ciclo: 140, rendimiento: "20,000 lb/ha" },
+    costos: { total: 51.1, margen: 27.2, partidas: [["Semilla", 15], ["Fertilizante", 20], ["Mano de obra", 29], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 21, temp: "0–4 °C", hum: "90–95 %", manejo: "lavado · atado", perdidas: 9.4 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 40], ["Industria", 12]], margen: 23.5 },
+    proc: { nivel: "fresco", formas: ["sofrito", "sazones deshidratados"] },
+    derivados: ["Sazón completo", "Sofrito industrial"]
+  },
+  "puerro": {
+    prod: { zonas: ["Constanza"], zafra: "todo el año", sistema: "riego", ciclo: 130, rendimiento: "16,000 lb/ha" },
+    costos: { total: 57.4, margen: 27.2, partidas: [["Semilla", 16], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 20, temp: "0–4 °C", hum: "90–95 %", manejo: "atado · bolsas", perdidas: 9.2 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 40], ["Industria", 14]], margen: 23.7 },
+    proc: { nivel: "fresco", formas: ["deshidratado"] },
+    derivados: ["Puerro deshidratado"]
+  },
+  "cebolla": {
+    prod: { zonas: ["San Juan", "San José de Ocoa", "Valle del Cibao"], zafra: "NOV–ABR", sistema: "riego", ciclo: 125, rendimiento: "17,000 lb/ha" },
+    costos: { total: 25.1, margen: 27.2, partidas: [["Semilla", 14], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 10], ["Transporte", 16], ["Otros", 12]] },
+    post: { vida: 30, temp: "4–8 °C", hum: "65–70 %", manejo: "curado en campo · mallas", perdidas: 9.0 },
+    com: { canales: [["Mayorista", 50], ["Minorista", 32], ["Industria", 10], ["Exportación", 8]], margen: 24.4 },
+    proc: { nivel: "fresco", formas: ["deshidratada"] },
+    derivados: ["Cebolla deshidratada"]
+  },
+  "ajo": {
+    prod: { zonas: ["Constanza"], zafra: "MAR–ABR", sistema: "riego", ciclo: 180, rendimiento: "8,000 lb/ha" },
+    costos: { total: 86.1, margen: 27.0, partidas: [["Semilla importada", 34], ["Fertilizante", 16], ["Mano de obra", 22], ["Riego", 8], ["Transporte", 8], ["Otros", 12]] },
+    post: { vida: 120, temp: "0–4 °C", hum: "60–65 %", manejo: "tejido y trenzado · bodega seca", perdidas: 7.2 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 40], ["Industria", 12]], margen: 22.9 },
+    proc: { nivel: "fresco · procesado", formas: ["ajo pelado", "pasta", "deshidratado"] },
+    derivados: ["Ajo pelado al vacío", "Pasta de ajo", "Ajo deshidratado"]
+  },
+  "platano-maduro": {
+    prod: { zonas: ["Monte Plata", "Hato Mayor", "Barahona"], zafra: "todo el año", sistema: "secano", ciclo: "perenne", rendimiento: "700 racimos/ha/año" },
+    costos: { total: 19.3, margen: 27.2, partidas: [["Manejo del cultivo", 24], ["Fertilizante", 16], ["Mano de obra", 26], ["Transporte", 16], ["Riego", 6], ["Otros", 12]] },
+    post: { vida: 8, temp: "18–22 °C", hum: "75–85 %", manejo: "racimo → dedos · cajas", perdidas: 10.8 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 36], ["Industria", 12], ["Exportación", 6]], margen: 23.2 },
+    proc: { nivel: "fresco · procesado", formas: ["maduro frito congelado", "harina"] },
+    derivados: ["Tostones de maduro", "Harina de plátano"]
+  },
+  "yautia-blanca": {
+    prod: { zonas: ["San José de Ocoa", "San Juan"], zafra: "todo el año", sistema: "secano", ciclo: 290, rendimiento: "10,000 lb/ha" },
+    costos: { total: 36.8, margen: 27.1, partidas: [["Semilla", 20], ["Mano de obra", 30], ["Fertilizante", 14], ["Transporte", 18], ["Otros", 18]] },
+    post: { vida: 40, temp: "7–10 °C", hum: "70–80 %", manejo: "sacos ventilados", perdidas: 9.5 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 38], ["Exportación", 14]], margen: 22.0 },
+    proc: { nivel: "fresco", formas: ["congelado pelado"] },
+    derivados: ["Yautía congelada"]
+  },
+  "platano-verde": {
+    prod: { zonas: ["Monte Plata", "Hato Mayor", "Azua"], zafra: "todo el año", sistema: "secano", ciclo: "perenne", rendimiento: "700 racimos/ha/año" },
+    costos: { total: 16.7, margen: 27.4, partidas: [["Manejo del cultivo", 24], ["Fertilizante", 16], ["Mano de obra", 26], ["Transporte", 16], ["Riego", 6], ["Otros", 12]] },
+    post: { vida: 9, temp: "13–15 °C", hum: "80–90 %", manejo: "cajas de dedos", perdidas: 10.2 },
+    com: { canales: [["Mayorista", 44], ["Minorista", 34], ["Industria", 16], ["Exportación", 6]], margen: 23.6 },
+    proc: { nivel: "fresco · procesado", formas: ["tostones congelados", "mangú industrial", "chips"] },
+    derivados: ["Tostones congelados", "Chips de plátano", "Sazón criollo"]
+  },
+  "guineo-verde": {
+    prod: { zonas: ["Barahona", "Azua", "San Cristóbal"], zafra: "todo el año", sistema: "secano", ciclo: "perenne", rendimiento: "1,100 racimos/ha/año" },
+    costos: { total: 29.7, margen: 27.2, partidas: [["Manejo del cultivo", 24], ["Mano de obra", 26], ["Fertilizante", 16], ["Transporte", 16], ["Riego", 6], ["Otros", 12]] },
+    post: { vida: 10, temp: "13–15 °C", hum: "80–90 %", manejo: "cajas de dedos", perdidas: 10.6 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 38], ["Industria", 10], ["Exportación", 6]], margen: 23.3 },
+    proc: { nivel: "fresco", formas: ["chips"] },
+    derivados: ["Chips de guineo"]
+  },
+  "repollo": {
+    prod: { zonas: ["Constanza", "Jarabacoa", "San Juan"], zafra: "todo el año", sistema: "riego", ciclo: 100, rendimiento: "24,000 lb/ha" },
+    costos: { total: 51.7, margen: 27.1, partidas: [["Semilla", 14], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 12], ["Transporte", 14], ["Otros", 12]] },
+    post: { vida: 40, temp: "0–4 °C", hum: "90–95 %", manejo: "corte de tallo · malla", perdidas: 8.6 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 38], ["Industria", 16]], margen: 23.9 },
+    proc: { nivel: "fresco", formas: ["encurtidos"] },
+    derivados: ["Repollo encurtido", "Ensaladas listas"]
+  },
+  "auyama": {
+    prod: { zonas: ["San Juan", "Azua", "Baní"], zafra: "DIC–ABR", sistema: "secano", ciclo: 110, rendimiento: "20,000 lb/ha" },
+    costos: { total: 55.3, margen: 27.1, partidas: [["Semilla", 12], ["Mano de obra", 28], ["Fertilizante", 16], ["Transporte", 20], ["Plagas", 12], ["Otros", 12]] },
+    post: { vida: 90, temp: "10–15 °C", hum: "60–70 %", manejo: "curado al sol · bodega seca", perdidas: 7.4 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 36], ["Industria", 16]], margen: 23.7 },
+    proc: { nivel: "fresco", formas: ["puré"] },
+    derivados: ["Puré de auyama", "Sopas cremas"]
+  },
+  "aji-morron": {
+    prod: { zonas: ["La Vega", "Constanza", "Mao"], zafra: "todo el año", sistema: "riego", ciclo: 110, rendimiento: "16,000 lb/ha" },
+    costos: { total: 46.1, margen: 27.1, partidas: [["Semilla híbrida", 22], ["Fertilizante", 18], ["Mano de obra", 26], ["Riego", 10], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 16, temp: "7–10 °C", hum: "85–90 %", manejo: "clasificación por color · cajas", perdidas: 9.8 },
+    com: { canales: [["Exportación", 28], ["Mayorista", 38], ["Minorista", 24], ["Industria", 10]], margen: 25.8 },
+    proc: { nivel: "fresco", formas: ["deshidratado", "pasta"] },
+    derivados: ["Paprika", "Pasta de ají"]
+  },
+  "aji-cubanela": {
+    prod: { zonas: ["La Vega", "Mao", "San Juan"], zafra: "todo el año", sistema: "riego", ciclo: 100, rendimiento: "15,000 lb/ha" },
+    costos: { total: 46.0, margen: 27.1, partidas: [["Semilla", 20], ["Fertilizante", 18], ["Mano de obra", 27], ["Riego", 10], ["Transporte", 13], ["Otros", 12]] },
+    post: { vida: 14, temp: "7–10 °C", hum: "85–90 %", manejo: "cajas ventiladas", perdidas: 10.1 },
+    com: { canales: [["Mayorista", 44], ["Minorista", 32], ["Industria", 16], ["Exportación", 8]], margen: 24.7 },
+    proc: { nivel: "fresco", formas: ["sazones", "deshidratado"] },
+    derivados: ["Sazón criollo", "Ají deshidratado"]
+  },
+  "lechuga-rizada": {
+    prod: { zonas: ["Constanza"], zafra: "todo el año", sistema: "riego", ciclo: 75, rendimiento: "18,000 ud/ha" },
+    costos: { total: 43.1, margen: 27.1, partidas: [["Semilla", 16], ["Fertilizante", 18], ["Mano de obra", 30], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 10, temp: "0–4 °C", hum: "90–95 %", manejo: "campo → cuarto frío · cajas", perdidas: 11.8 },
+    com: { canales: [["Mayorista", 42], ["Minorista", 42], ["Industria", 16]], margen: 24.3 },
+    proc: { nivel: "fresco", formas: ["bolsa lista para consumir"] },
+    derivados: ["Ensaladas de bolsa"]
+  },
+  "lechuga-coco": {
+    prod: { zonas: ["Constanza"], zafra: "todo el año", sistema: "riego", ciclo: 75, rendimiento: "20,000 ud/ha" },
+    costos: { total: 37.0, margen: 27.0, partidas: [["Semilla", 16], ["Fertilizante", 18], ["Mano de obra", 30], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 10, temp: "0–4 °C", hum: "90–95 %", manejo: "cuarto frío · cajas", perdidas: 11.5 },
+    com: { canales: [["Mayorista", 44], ["Minorista", 40], ["Industria", 16]], margen: 24.1 },
+    proc: { nivel: "fresco", formas: ["bolsa lista para consumir"] },
+    derivados: ["Ensaladas de bolsa"]
+  },
+  "pepino": {
+    prod: { zonas: ["La Vega", "San Juan", "Constanza"], zafra: "todo el año", sistema: "riego", ciclo: 65, rendimiento: "20,000 lb/ha" },
+    costos: { total: 56.5, margen: 27.2, partidas: [["Semilla", 18], ["Fertilizante", 18], ["Mano de obra", 28], ["Riego", 10], ["Transporte", 14], ["Otros", 12]] },
+    post: { vida: 14, temp: "10–12 °C", hum: "85–90 %", manejo: "cajas", perdidas: 9.6 },
+    com: { canales: [["Mayorista", 44], ["Minorista", 36], ["Industria", 20]], margen: 23.8 },
+    proc: { nivel: "fresco", formas: ["encurtidos"] },
+    derivados: ["Pepinillos en vinagre"]
+  },
+  "tomate": {
+    prod: { zonas: ["Azua", "San Juan", "Baní"], zafra: "NOV–ABR", sistema: "riego", ciclo: 105, rendimiento: "22,000 lb/ha" },
+    costos: { total: 37.9, margen: 27.1, partidas: [["Semilla híbrida", 20], ["Fertilizante", 18], ["Mano de obra", 28], ["Riego", 10], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 10, temp: "10–12 °C", hum: "85–90 %", manejo: "clasificación por grado · cajas", perdidas: 11.2 },
+    com: { canales: [["Mayorista", 42], ["Industria", 24], ["Minorista", 26], ["Exportación", 8]], margen: 25.2 },
+    proc: { nivel: "fresco · procesado", formas: ["pasta", "salsa", "conservas"] },
+    derivados: ["Pasta de tomate", "Salsa de tomate", "Tomate enlatado"]
+  },
+  "coco-seco": {
+    prod: { zonas: ["Sabana Grande de Boyá", "Monte Plata", "Duarte"], zafra: "todo el año", sistema: "secano", ciclo: "perenne", rendimiento: "19,000 nueces/ha/año" },
+    costos: { total: 24.4, margen: 27.2, partidas: [["Manejo de palma", 20], ["Cosecha", 28], ["Mano de obra", 16], ["Transporte", 22], ["Beneficio", 8], ["Otros", 6]] },
+    post: { vida: 30, temp: "ambiente", hum: "70–80 %", manejo: "descopete · pila ventilada", perdidas: 8.9 },
+    com: { canales: [["Mayorista", 40], ["Industria", 34], ["Minorista", 20], ["Exportación", 6]], margen: 23.1 },
+    proc: { nivel: "fresco · procesado", formas: ["aceite", "leche", "copra"] },
+    derivados: ["Aceite de coco", "Leche de coco", "Copra"]
+  },
+  "aguacate": {
+    prod: { zonas: ["Baní", "San José de Ocoa", "Miches"], zafra: "SEP–ENE", sistema: "secano", ciclo: "perenne", rendimiento: "9,000 kg/ha" },
+    costos: { total: 58.3, margen: 27.1, partidas: [["Manejo del cultivo", 22], ["Fertilizante", 16], ["Cosecha", 24], ["Mano de obra", 14], ["Transporte", 14], ["Otros", 10]] },
+    post: { vida: 12, temp: "5–8 °C", hum: "85–90 %", manejo: "cajas de una capa", perdidas: 9.7 },
+    com: { canales: [["Exportación", 30], ["Mayorista", 36], ["Minorista", 24], ["Industria", 10]], margen: 25.9 },
+    proc: { nivel: "fresco · procesado", formas: ["guacamole", "aceite"] },
+    derivados: ["Guacamole", "Aceite de aguacate"]
+  },
+  "manzana-roja": {
+    prod: { zonas: ["Importación — EE. UU.", "Importación — Chile"], zafra: "todo el año", sistema: "—", ciclo: "—", rendimiento: "—" },
+    costos: { total: 80.4, margen: 17.7, partidas: [["FOB", 62], ["Flete y seguro", 14], ["Aranceles", 8], ["Distribución", 10], ["Otros", 6]] },
+    post: { vida: 60, temp: "0–1 °C", hum: "90–95 %", manejo: "cadena de frío continua · atmósfera controlada", perdidas: 4.8 },
+    com: { canales: [["Distribuidor", 40], ["Mayorista", 34], ["Minorista", 26]], margen: 18.2 },
+    proc: { nivel: "fresco", formas: [] },
+    derivados: []
+  },
+  "zapote": {
+    prod: { zonas: ["San Cristóbal", "Baní", "Peravia"], zafra: "FEB–ABR", sistema: "secano", ciclo: "perenne", rendimiento: "9,000 ud/ha" },
+    costos: { total: 48.8, margen: 27.2, partidas: [["Manejo del cultivo", 22], ["Cosecha", 24], ["Fertilizante", 14], ["Mano de obra", 16], ["Transporte", 14], ["Otros", 10]] },
+    post: { vida: 10, temp: "12–15 °C", hum: "85–90 %", manejo: "cosecha en preclimaterio", perdidas: 11.4 },
+    com: { canales: [["Mayorista", 52], ["Minorista", 36], ["Industria", 12]], margen: 22.8 },
+    proc: { nivel: "fresco", formas: ["pulpa"] },
+    derivados: ["Pulpa de zapote", "Batidos industriales"]
+  },
+  "huevo-blanco": {
+    prod: { zonas: ["La Vega", "Santiago", "Monte Plata"], zafra: "todo el año", sistema: "intensivo", ciclo: 380, rendimiento: "300 huevos/ave/año" },
+    costos: { total: 12.8, margen: 26.9, partidas: [["Alimento", 60], ["Pollona", 16], ["Sanidad", 6], ["Mano de obra", 6], ["Energía", 5], ["Otros", 7]] },
+    post: { vida: 30, temp: "ambiente fresco", hum: "70–75 %", manejo: "recolección diaria · planchas", perdidas: 3.4 },
+    com: { canales: [["Mayorista", 52], ["Minorista", 38], ["Industria", 10]], margen: 25.7 },
+    proc: { nivel: "fresco", formas: ["huevo líquido pasteurizado"] },
+    derivados: ["Huevo líquido pasteurizado"]
+  },
+  "huevo-blanco-empacado": {
+    prod: { zonas: ["La Vega", "Santiago — plantas de empaque"], zafra: "todo el año", sistema: "intensivo", ciclo: 380, rendimiento: "300 huevos/ave/año" },
+    costos: { total: 12.9, margen: 28.3, partidas: [["Huevo suelto", 78], ["Empaque", 10], ["Frío y logística", 6], ["Otros", 6]] },
+    post: { vida: 30, temp: "15–20 °C", hum: "70–75 %", manejo: "clasificación por peso · cartones de 12 y 30", perdidas: 2.9 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 44], ["Industria", 10]], margen: 26.8 },
+    proc: { nivel: "procesado", formas: ["cartón de 12 y 30"] },
+    derivados: ["Mezclas de horno"]
+  },
+  "huevo-marron": {
+    prod: { zonas: ["La Vega", "Moca"], zafra: "todo el año", sistema: "intensivo", ciclo: 380, rendimiento: "280 huevos/ave/año" },
+    costos: { total: 14.3, margen: 27.4, partidas: [["Alimento", 60], ["Pollona", 16], ["Sanidad", 6], ["Mano de obra", 6], ["Energía", 5], ["Otros", 7]] },
+    post: { vida: 30, temp: "ambiente fresco", hum: "70–75 %", manejo: "recolección diaria · planchas", perdidas: 3.5 },
+    com: { canales: [["Mayorista", 50], ["Minorista", 40], ["Industria", 10]], margen: 26.1 },
+    proc: { nivel: "fresco", formas: ["huevo líquido pasteurizado"] },
+    derivados: ["Huevo líquido pasteurizado"]
+  },
+  "lechoza": {
+    prod: { zonas: ["San Juan", "Azua", "Barahona"], zafra: "todo el año", sistema: "secano", ciclo: 300, rendimiento: "14,000 ud/ha" },
+    costos: { total: 9.9, margen: 27.2, partidas: [["Semilla", 10], ["Manejo del cultivo", 20], ["Mano de obra", 28], ["Fertilizante", 14], ["Transporte", 18], ["Otros", 10]] },
+    post: { vida: 14, temp: "7–10 °C", hum: "85–90 %", manejo: "cosecha en verde · empaque en espuma", perdidas: 10.9 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 34], ["Industria", 18]], margen: 23.4 },
+    proc: { nivel: "fresco", formas: ["pulpa", "jugo"] },
+    derivados: ["Pulpa de lechoza", "Batidos"]
+  },
+  "tamarindo-empacado": {
+    prod: { zonas: ["San Juan", "Baní", "Azua"], zafra: "ENE–MAR", sistema: "secano", ciclo: "perenne", rendimiento: "10,000 kg/ha" },
+    costos: { total: 40.7, margen: 27.1, partidas: [["Cosecha", 26], ["Beneficio y empaque", 24], ["Mano de obra", 18], ["Manejo del cultivo", 14], ["Transporte", 12], ["Otros", 6]] },
+    post: { vida: 180, temp: "ambiente seco", hum: "60–65 %", manejo: "vaina → pulpa · bolsas de 1 lb", perdidas: 6.8 },
+    com: { canales: [["Mayorista", 40], ["Minorista", 36], ["Industria", 24]], margen: 23.2 },
+    proc: { nivel: "procesado", formas: ["pulpa", "jugo", "salsa"] },
+    derivados: ["Pulpa de tamarindo", "Salsa de tamarindo"]
+  },
+  "pina": {
+    prod: { zonas: ["Monte Plata", "Higüey", "San Juan"], zafra: "todo el año", sistema: "riego", ciclo: 540, rendimiento: "30,000 ud/ha" },
+    costos: { total: 43.7, margen: 27.2, partidas: [["Material vegetal", 14], ["Fertilizante", 18], ["Mano de obra", 26], ["Riego", 10], ["Transporte", 14], ["Otros", 18]] },
+    post: { vida: 21, temp: "7–10 °C", hum: "85–90 %", manejo: "despunte · cajas", perdidas: 8.7 },
+    com: { canales: [["Exportación", 24], ["Mayorista", 36], ["Industria", 22], ["Minorista", 18]], margen: 24.6 },
+    proc: { nivel: "fresco · procesado", formas: ["jugo", "trozos enlatados", "concentrado"] },
+    derivados: ["Jugo de piña", "Piña enlatada"]
+  },
+  "pollo-gringo": {
+    prod: { zonas: ["La Vega", "Moca", "Monte Plata"], zafra: "todo el año", sistema: "intensivo", ciclo: 45, rendimiento: "5.8 lb/ave" },
+    costos: { total: 65.3, margen: 27.1, partidas: [["Alimento", 62], ["Pollito", 15], ["Sanidad", 7], ["Mano de obra", 6], ["Energía", 4], ["Otros", 6]] },
+    post: { vida: 6, temp: "0–4 °C", hum: "80–85 %", manejo: "beneficio en planta · cadena de frío", perdidas: 3.8 },
+    com: { canales: [["Mayorista", 54], ["Minorista", 36], ["Industria", 10]], margen: 25.4 },
+    proc: { nivel: "fresco · procesado", formas: ["presas congeladas", "empanizado"] },
+    derivados: ["Presas congeladas", "Pollo empanizado"]
+  },
+  "brocoli": {
+    prod: { zonas: ["Constanza"], zafra: "todo el año", sistema: "riego", ciclo: 95, rendimiento: "12,000 lb/ha" },
+    costos: { total: 52.3, margen: 27.1, partidas: [["Semilla", 16], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 14, temp: "0–2 °C", hum: "90–95 %", manejo: "cuartos fríos · hielo", perdidas: 10.2 },
+    com: { canales: [["Mayorista", 44], ["Exportación", 24], ["Minorista", 22], ["Industria", 10]], margen: 25.3 },
+    proc: { nivel: "fresco", formas: ["congelado"] },
+    derivados: ["Brócoli congelado"]
+  },
+  "coliflor": {
+    prod: { zonas: ["Constanza", "Jarabacoa"], zafra: "NOV–MAR", sistema: "riego", ciclo: 100, rendimiento: "13,000 lb/ha" },
+    costos: { total: 58.7, margen: 27.2, partidas: [["Semilla", 16], ["Fertilizante", 20], ["Mano de obra", 28], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 16, temp: "0–2 °C", hum: "90–95 %", manejo: "hojas envolventes · cajas", perdidas: 9.8 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 36], ["Industria", 16]], margen: 23.7 },
+    proc: { nivel: "fresco", formas: ["congelada"] },
+    derivados: ["Coliflor congelada"]
+  },
+  "limon": {
+    prod: { zonas: ["San Cristóbal", "Yaguate", "Baní"], zafra: "todo el año", sistema: "riego", ciclo: "perenne", rendimiento: "180,000 ud/ha/año" },
+    costos: { total: 22.1, margen: 27.3, partidas: [["Manejo del cultivo", 22], ["Cosecha", 24], ["Fertilizante", 16], ["Mano de obra", 14], ["Transporte", 14], ["Otros", 10]] },
+    post: { vida: 30, temp: "8–10 °C", hum: "85–90 %", manejo: "cajas", perdidas: 8.2 },
+    com: { canales: [["Mayorista", 44], ["Industria", 24], ["Minorista", 26], ["Exportación", 6]], margen: 23.5 },
+    proc: { nivel: "fresco · procesado", formas: ["jugo concentrado", "aceite esencial"] },
+    derivados: ["Jugo de limón", "Aceite de limón"]
+  },
+  "rabano": {
+    prod: { zonas: ["Constanza", "La Vega"], zafra: "todo el año", sistema: "riego", ciclo: 35, rendimiento: "10,000 lb/ha" },
+    costos: { total: 20.1, margen: 27.2, partidas: [["Semilla", 14], ["Fertilizante", 20], ["Mano de obra", 30], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 12, temp: "0–4 °C", hum: "90–95 %", manejo: "atado con follaje", perdidas: 9.6 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 42], ["Industria", 12]], margen: 23.8 },
+    proc: { nivel: "fresco", formas: ["encurtidos"] },
+    derivados: ["Rábanos encurtidos"]
+  },
+  "mandarina": {
+    prod: { zonas: ["Jarabacoa", "Constanza"], zafra: "OCT–ENE", sistema: "riego", ciclo: "perenne", rendimiento: "120,000 ud/ha/año" },
+    costos: { total: 43.8, margen: 27.1, partidas: [["Manejo del cultivo", 22], ["Cosecha", 24], ["Fertilizante", 16], ["Mano de obra", 14], ["Transporte", 14], ["Otros", 10]] },
+    post: { vida: 21, temp: "5–8 °C", hum: "90 %", manejo: "cajas", perdidas: 9.1 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 38], ["Industria", 14]], margen: 23.1 },
+    proc: { nivel: "fresco", formas: ["jugo"] },
+    derivados: ["Jugo de mandarina"]
+  },
+  "recaito": {
+    prod: { zonas: ["La Vega", "San Cristóbal", "San Juan"], zafra: "todo el año", sistema: "riego", ciclo: 75, rendimiento: "14,000 ud/ha" },
+    costos: { total: 49.5, margen: 27.1, partidas: [["Semilla", 16], ["Fertilizante", 18], ["Mano de obra", 30], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 7, temp: "0–4 °C", hum: "90–95 %", manejo: "manojos · rociado", perdidas: 11.7 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 38], ["Industria", 16]], margen: 23.5 },
+    proc: { nivel: "fresco", formas: ["sofrito", "sazones"] },
+    derivados: ["Sofrito envasado", "Sazón criollo"]
+  },
+  "zucchini": {
+    prod: { zonas: ["Constanza", "La Vega"], zafra: "todo el año", sistema: "riego", ciclo: 60, rendimiento: "16,000 lb/ha" },
+    costos: { total: 52.0, margen: 27.2, partidas: [["Semilla híbrida", 20], ["Fertilizante", 18], ["Mano de obra", 28], ["Riego", 10], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 10, temp: "5–8 °C", hum: "85–90 %", manejo: "cajas", perdidas: 9.9 },
+    com: { canales: [["Mayorista", 46], ["Exportación", 18], ["Minorista", 26], ["Industria", 10]], margen: 24.3 },
+    proc: { nivel: "fresco", formas: ["congelado"] },
+    derivados: ["Zucchini congelado"]
+  },
+  "pitahaya": {
+    prod: { zonas: ["Monte Plata", "Baní", "San Cristóbal"], zafra: "MAY–NOV", sistema: "riego", ciclo: 540, rendimiento: "15,000 ud/ha" },
+    costos: { total: 84.8, margen: 27.1, partidas: [["Tutores y postes", 24], ["Material vegetal", 16], ["Mano de obra", 24], ["Fertilizante", 14], ["Riego", 10], ["Transporte", 12]] },
+    post: { vida: 12, temp: "5–8 °C", hum: "85–90 %", manejo: "clasificación por brix · cajas individuales", perdidas: 9.9 },
+    com: { canales: [["Exportación", 34], ["Mayorista", 32], ["Minorista", 24], ["Industria", 10]], margen: 26.4 },
+    proc: { nivel: "fresco", formas: ["pulpa", "deshidratada"] },
+    derivados: ["Pulpa de pitahaya", "Pitahaya deshidratada"]
+  },
+  "batata-asada": {
+    prod: { zonas: ["Planta de proceso — Santo Domingo", "Materia prima — San Cristóbal", "Materia prima — Peravia"], zafra: "todo el año", sistema: "—", ciclo: "—", rendimiento: "92 % de conversión" },
+    costos: { total: 74.1, margen: 21.3, partidas: [["Materia prima (batata)", 64], ["Proceso horneado", 14], ["Empaque", 10], ["Frío", 6], ["Distribución", 6]] },
+    post: { vida: 12, temp: "2–4 °C", hum: "80–85 %", manejo: "horneado · empaque individual", perdidas: 4.6 },
+    com: { canales: [["Minorista", 48], ["Mayorista", 34], ["Industria", 18]], margen: 22.7 },
+    proc: { nivel: "procesado", formas: ["lista para consumir"] },
+    derivados: ["Batata lista para microondas", "Purés"]
+  },
+  "fresa": {
+    prod: { zonas: ["Constanza"], zafra: "NOV–ABR", sistema: "riego", ciclo: 150, rendimiento: "28,000 lb/ha" },
+    costos: { total: 88.7, margen: 27.1, partidas: [["Plántulas", 26], ["Preparación y mulch", 18], ["Mano de obra", 24], ["Fertilizante", 12], ["Riego", 10], ["Transporte", 10]] },
+    post: { vida: 5, temp: "0–2 °C", hum: "90–95 %", manejo: "cosecha diaria · bandejas", perdidas: 14.6 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 34], ["Industria", 20]], margen: 24.7 },
+    proc: { nivel: "fresco · procesado", formas: ["pulpa", "mermelada"] },
+    derivados: ["Mermelada de fresa", "Pulpa de fresa"]
+  },
+  "coco-de-agua": {
+    prod: { zonas: ["Monte Plata", "Sabana Grande de Boyá", "Duarte"], zafra: "todo el año", sistema: "secano", ciclo: "perenne", rendimiento: "16,000 cocos/ha/año" },
+    costos: { total: 35.0, margen: 27.1, partidas: [["Manejo de palma", 20], ["Cosecha", 28], ["Mano de obra", 16], ["Transporte", 22], ["Beneficio", 8], ["Otros", 6]] },
+    post: { vida: 14, temp: "5–8 °C", hum: "85–90 %", manejo: "rebaje de corona · empaque", perdidas: 9.3 },
+    com: { canales: [["Mayorista", 38], ["Minorista", 32], ["Industria", 24], ["Exportación", 6]], margen: 23.6 },
+    proc: { nivel: "fresco · procesado", formas: ["agua embotellada", "gel"] },
+    derivados: ["Agua de coco embotellada", "Gel de coco"]
+  },
+  "molondron": {
+    prod: { zonas: ["San Juan", "Azua"], zafra: "DIC–ABR", sistema: "riego", ciclo: 80, rendimiento: "9,000 lb/ha" },
+    costos: { total: 33.3, margen: 27.3, partidas: [["Semilla", 14], ["Fertilizante", 18], ["Mano de obra", 30], ["Riego", 12], ["Transporte", 14], ["Otros", 12]] },
+    post: { vida: 10, temp: "7–10 °C", hum: "85 %", manejo: "atado · cajas", perdidas: 10.4 },
+    com: { canales: [["Mayorista", 52], ["Minorista", 38], ["Industria", 10]], margen: 23.2 },
+    proc: { nivel: "fresco", formas: ["deshidratado"] },
+    derivados: ["Molondrón deshidratado"]
+  },
+  "habichuela-verde": {
+    prod: { zonas: ["La Vega", "Constanza", "San Juan"], zafra: "todo el año", sistema: "riego", ciclo: 55, rendimiento: "11,000 lb/ha" },
+    costos: { total: 26.0, margen: 27.2, partidas: [["Semilla", 16], ["Fertilizante", 18], ["Mano de obra", 30], ["Riego", 12], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 10, temp: "4–7 °C", hum: "90–95 %", manejo: "selección · bolsas", perdidas: 9.8 },
+    com: { canales: [["Mayorista", 44], ["Minorista", 34], ["Exportación", 14], ["Industria", 8]], margen: 24.1 },
+    proc: { nivel: "fresco", formas: ["congelada"] },
+    derivados: ["Habichuela verde congelada"]
+  },
+  "habichuela-jacumelo": {
+    prod: { zonas: ["San Juan", "Azua", "Bahoruco"], zafra: "DIC–MAR · AGO–NOV", sistema: "secano", ciclo: 85, rendimiento: "1,800 lb/ha" },
+    costos: { total: 71.0, margen: 27.2, partidas: [["Semilla certificada", 26], ["Fertilizante", 18], ["Mano de obra", 24], ["Plagas", 12], ["Transporte", 12], ["Otros", 8]] },
+    post: { vida: 270, temp: "ambiente seco", hum: "60–65 %", manejo: "trillado · sacos de 100 lb", perdidas: 5.6 },
+    com: { canales: [["Mayorista", 46], ["Minorista", 38], ["Industria", 16]], margen: 23.4 },
+    proc: { nivel: "fresco · procesado", formas: ["enlatadas", "precocida"] },
+    derivados: ["Habichuelas enlatadas", "Sopas de bolsa"]
+  },
+  "habichuela-negra": {
+    prod: { zonas: ["San Juan", "Importación — Centroamérica"], zafra: "todo el año", sistema: "secano", ciclo: 90, rendimiento: "1,700 lb/ha" },
+    costos: { total: 40.9, margen: 23.1, partidas: [["Compra en grano", 52], ["Beneficio y limpieza", 14], ["Transporte", 14], ["Financiamiento", 12], ["Empaque", 8]] },
+    post: { vida: 270, temp: "ambiente seco", hum: "60–65 %", manejo: "sacos de 100 lb", perdidas: 5.2 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 36], ["Industria", 16]], margen: 21.7 },
+    proc: { nivel: "fresco · procesado", formas: ["enlatadas"] },
+    derivados: ["Habichuelas negras enlatadas"]
+  },
+  "maiz": {
+    prod: { zonas: ["San Juan", "Azua", "Monte Plata"], zafra: "FEB–AGO", sistema: "riego", ciclo: 115, rendimiento: "8,000 lb/ha" },
+    costos: { total: 59.4, margen: 27.1, partidas: [["Semilla híbrida", 22], ["Fertilizante", 24], ["Mano de obra", 20], ["Riego", 10], ["Transporte", 12], ["Otros", 12]] },
+    post: { vida: 240, temp: "ambiente seco (13 % humedad)", hum: "60–65 %", manejo: "secado · silos", perdidas: 5.4 },
+    com: { canales: [["Industria", 46], ["Mayorista", 36], ["Minorista", 18]], margen: 22.6 },
+    proc: { nivel: "procesado", formas: ["harina", "alimento balanceado"] },
+    derivados: ["Harina de maíz", "Alimento balanceado", "Cereales"]
+  },
+  "carne-de-vaca": {
+    prod: { zonas: ["Higüey", "San Juan", "Dajabón"], zafra: "todo el año", sistema: "pastoreo", ciclo: 900, rendimiento: "52 % de canal" },
+    costos: { total: 192.0, margen: 24.4, partidas: [["Pasto y suplemento", 42], ["Sanidad", 10], ["Mano de obra", 16], ["Infraestructura", 12], ["Transporte", 8], ["Otros", 12]] },
+    post: { vida: 21, temp: "0–2 °C", hum: "80–85 %", manejo: "maduración 7 días · envasado al vacío", perdidas: 3.9 },
+    com: { canales: [["Mayorista", 48], ["Minorista", 32], ["Industria", 20]], margen: 24.4 },
+    proc: { nivel: "fresco · procesado", formas: ["embutidos", "hamburguesa"] },
+    derivados: ["Hamburguesas", "Embutidos", "Tasajo"]
+  },
+  "carne-de-cerdo": {
+    prod: { zonas: ["La Vega", "Moca", "Santo Domingo Oeste"], zafra: "todo el año", sistema: "intensivo", ciclo: 185, rendimiento: "200 lb vivo/animal" },
+    costos: { total: 105.5, margen: 26.9, partidas: [["Alimento", 65], ["Lechón", 12], ["Sanidad", 6], ["Mano de obra", 7], ["Energía", 4], ["Otros", 6]] },
+    post: { vida: 12, temp: "0–2 °C", hum: "80–85 %", manejo: "beneficio en planta certificada · vacío", perdidas: 3.6 },
+    com: { canales: [["Mayorista", 44], ["Industria", 32], ["Minorista", 24]], margen: 25.1 },
+    proc: { nivel: "fresco · procesado", formas: ["jamón", "salchichón", "tocineta"] },
+    derivados: ["Jamón ahumado", "Salchichón", "Tocineta"]
+  },
+  "chuleta": {
+    prod: { zonas: ["Plantas de corte — La Vega", "Plantas de corte — Moca"], zafra: "todo el año", sistema: "—", ciclo: "—", rendimiento: "78 % de rendimiento" },
+    costos: { total: 122.6, margen: 24.0, partidas: [["Materia prima", 68], ["Corte y deshuese", 12], ["Empaque", 8], ["Frío", 6], ["Distribución", 6]] },
+    post: { vida: 14, temp: "0–2 °C", hum: "80–85 %", manejo: "corte en bandejas · atmósfera modificada", perdidas: 3.2 },
+    com: { canales: [["Minorista", 44], ["Mayorista", 36], ["Industria", 20]], margen: 24.6 },
+    proc: { nivel: "procesado", formas: ["ahumada", "empanizada"] },
+    derivados: ["Chuleta ahumada", "Chuleta empanizada"]
+  },
+  "costilla-ahumada": {
+    prod: { zonas: ["Plantas de proceso — Santo Domingo"], zafra: "todo el año", sistema: "—", ciclo: "—", rendimiento: "72 % de rendimiento" },
+    costos: { total: 148.2, margen: 22.5, partidas: [["Materia prima", 66], ["Salmuera y ahumado", 14], ["Empaque", 8], ["Frío", 6], ["Distribución", 6]] },
+    post: { vida: 60, temp: "0–4 °C", hum: "75–80 %", manejo: "curado en salmuera · envasado al vacío", perdidas: 2.8 },
+    com: { canales: [["Minorista", 52], ["Mayorista", 30], ["Industria", 18]], margen: 23.4 },
+    proc: { nivel: "procesado", formas: ["porciones envasadas"] },
+    derivados: ["Porciones al vacío", "Trozos para frijoles"]
+  },
+  "sandia": {
+    prod: { zonas: ["San Juan", "Azua", "Baní"], zafra: "DIC–ABR", sistema: "secano", ciclo: 85, rendimiento: "12,000 ud/ha" },
+    costos: { total: 9.8, margen: 26.9, partidas: [["Semilla", 14], ["Mano de obra", 28], ["Fertilizante", 16], ["Plagas", 12], ["Transporte", 18], ["Otros", 12]] },
+    post: { vida: 14, temp: "10–12 °C", hum: "80–85 %", manejo: "cosecha con 2 hojas · carga suave", perdidas: 8.4 },
+    com: { canales: [["Mayorista", 52], ["Minorista", 38], ["Industria", 10]], margen: 22.9 },
+    proc: { nivel: "fresco", formas: ["jugo"] },
+    derivados: ["Jugo de sandía"]
+  }
+};
+
+const QAS = {
+  "cebolla-blanca": [
+    ["¿Cuándo es la zafra?", "La zafra corre de noviembre a abril, con San José de Ocoa, el Cibao y San Juan como principales zonas productoras."],
+    ["¿Qué pesa más en el costo?", "La mano de obra (28%), seguida del fertilizante (20%); el costo total ronda RD$ 26.80 por libra."],
+    ["¿Cómo se conserva?", "Curada en campo, dura unas 4 semanas a 4–8 °C, con pérdidas en torno al 9%."]
+  ],
+  "name": [
+    ["¿Se exporta?", "Sí — cerca del 10% de la colocación sale al exterior, además del mercado mayorista y minorista."],
+    ["¿Por qué requiere tutores?", "El ñame es un bejuco: el tutoreo (12% del costo) sostiene la planta y protege el rendimiento de raíz."],
+    ["¿Cómo se conserva?", "En curado y cajas ventiladas, dura hasta 60 días a 13–15 °C."]
+  ],
+  "batata": [
+    ["¿Cuándo se produce?", "Todo el año, con San Cristóbal, Peravia y Azua como zonas principales bajo riego."],
+    ["¿Qué derivados tiene?", "Batata asada lista, puré congelado y harina de batata — la industria toma cerca del 12% del volumen."],
+    ["¿Qué pesa más en el costo?", "La mano de obra (28%) y la semilla (16%); el costo total ronda RD$ 63.40 por unidad."]
+  ],
+  "yautia-amarilla": [
+    ["¿Cuándo se produce?", "Todo el año en secano, con San José de Ocoa, San Juan y el Bahoruco como zonas principales."],
+    ["¿Se exporta?", "Sí — alrededor del 14% se coloca en mercados externos."],
+    ["¿Cómo se conserva?", "En sacos ventilados a 7–10 °C, dura hasta 45 días con pérdidas cercanas al 9.6%."]
+  ],
+  "yuca": [
+    ["¿Por qué su vida útil es tan corta?", "La raíz se deteriora en 3–5 días tras la cosecha: se desentierra a demanda y las raíces seleccionadas van enceradas."],
+    ["¿Qué derivados tiene?", "Casabe, almidón, yuca congelada y tapioca — la industria absorbe cerca del 26% del volumen."],
+    ["¿Qué pesa más en el costo?", "La mano de obra (30%) y el transporte (20%), agravados por la perecibilidad."]
+  ],
+  "jengibre": [
+    ["¿Se exporta?", "Sí — cerca del 30% de la cosecha sale al exterior, uno de los rubros exportadores más fuertes de la canasta."],
+    ["¿Qué derivados tiene?", "Jengibre deshidratado, ginger beer e infusiones."],
+    ["¿Cuándo es la zafra?", "De diciembre a mayo, con Jarabacoa y Constanza como zonas productoras bajo riego."]
+  ],
+  "yautia-coco": [
+    ["¿Cuándo se produce?", "Todo el año en secano, en San José de Ocoa y San Juan."],
+    ["¿Cómo se conserva?", "En sacos ventilados a 7–10 °C, dura unas 6 semanas."],
+    ["¿Cuál es el canal principal?", "El mayorista, con cerca de la mitad del volumen colocado."]
+  ],
+  "remolacha": [
+    ["¿Cuándo es la zafra?", "De noviembre a abril, con Constanza y Jarabacoa como zonas productoras."],
+    ["¿Qué derivados tiene?", "Remolacha encurtida y jugo de remolacha."],
+    ["¿Cómo se conserva?", "Con el follaje cortado y en bolsas perforadas, dura unas 5 semanas a 0–4 °C."]
+  ],
+  "zanahoria": [
+    ["¿Cuándo se produce?", "Todo el año en Constanza y Jarabacoa, bajo riego."],
+    ["¿Qué derivados tiene?", "Jugo de zanahoria y zanahoria congelada rallada — la industria toma cerca del 14%."],
+    ["¿Cómo se conserva?", "Lavada y en bolsas, dura un mes a 0–4 °C con humedad de 90–95%."]
+  ],
+  "papa": [
+    ["¿Cuándo es la zafra?", "De diciembre a marzo, con Constanza, San José de Ocoa y San Juan como zonas principales."],
+    ["¿Por qué la semilla pesa tanto en el costo?", "Usa semilla certificada importada (24% del costo), la partida más pesada del cultivo."],
+    ["¿Cómo se conserva?", "Curada dos semanas, dura hasta 3 meses en bodega ventilada a 8–12 °C."]
+  ],
+  "berenjena": [
+    ["¿Se exporta?", "Sí — cerca del 22% de la colocación sale al exterior."],
+    ["¿Cuándo se produce?", "Todo el año en La Vega, Bonao y San Cristóbal, bajo riego."],
+    ["¿Qué derivados tiene?", "Principalmente encurtidos y berenjena congelada."]
+  ],
+  "apio": [
+    ["¿Cuándo se produce?", "Todo el año, exclusivamente en Constanza, bajo riego."],
+    ["¿Qué derivados tiene?", "Sazón completo y sofrito industrial — la industria toma cerca del 12%."],
+    ["¿Cómo se conserva?", "Lavado y atado, dura 3 semanas a 0–4 °C."]
+  ],
+  "puerro": [
+    ["¿Dónde se produce?", "En Constanza, todo el año bajo riego, con ciclo de unos 130 días."],
+    ["¿Cómo se conserva?", "Atado y en bolsas, dura 20 días a 0–4 °C."],
+    ["¿Qué pesa más en el costo?", "La mano de obra (28%) y el fertilizante (20%); el costo ronda RD$ 57.40 por unidad."]
+  ],
+  "cebolla": [
+    ["¿Cuándo es la zafra?", "De noviembre a abril, con San Juan, Ocoa y el Cibao como zonas principales."],
+    ["¿Cuál es el canal principal?", "El mayorista, con cerca de la mitad del volumen; también abastece industria y exportación."],
+    ["¿Cómo se conserva?", "Curada en campo, dura un mes a 4–8 °C."]
+  ],
+  "ajo": [
+    ["¿Por qué es tan costoso su cultivo?", "La semilla es importada y representa el 34% del costo — la partida más pesada de la canasta."],
+    ["¿Cuándo es la zafra?", "De marzo a abril, en Constanza, con ciclo de unos 180 días."],
+    ["¿Cómo se conserva?", "Tejido y trenzado en bodega seca, dura hasta 4 meses a 0–4 °C."]
+  ],
+  "platano-maduro": [
+    ["¿Cuándo se produce?", "Todo el año: el plátano es perenne y cada racimo tarda cerca de 12 meses."],
+    ["¿Qué derivados tiene?", "Tostones de maduro y harina de plátano."],
+    ["¿Cómo se conserva?", "Separado en dedos y en cajas, dura cerca de una semana a 18–22 °C."]
+  ],
+  "yautia-blanca": [
+    ["¿Cuándo se produce?", "Todo el año en secano, en San José de Ocoa y San Juan."],
+    ["¿Se exporta?", "Sí — alrededor del 14% de la colocación sale al exterior."],
+    ["¿Cómo se conserva?", "En sacos ventilados a 7–10 °C, dura cerca de 6 semanas."]
+  ],
+  "platano-verde": [
+    ["¿Qué derivados tiene?", "Tostones congelados, chips y mangú industrial — la industria toma cerca del 16%."],
+    ["¿Cuándo se produce?", "Todo el año en Monte Plata, Hato Mayor y Azua; el cultivo es perenne."],
+    ["¿Cómo se conserva?", "En cajas de dedos a 13–15 °C, dura cerca de 10 días."]
+  ],
+  "guineo-verde": [
+    ["¿Cuándo se produce?", "Todo el año en Barahona, Azua y San Cristóbal, bajo secano."],
+    ["¿Qué derivados tiene?", "Chips de guineo, su forma procesada principal."],
+    ["¿Cómo se conserva?", "En cajas de dedos a 13–15 °C, dura unos 10 días, con pérdidas cercanas al 10.6%."]
+  ],
+  "repollo": [
+    ["¿Cuándo se produce?", "Todo el año en Constanza, Jarabacoa y San Juan, bajo riego."],
+    ["¿Qué derivados tiene?", "Repollo encurtido y ensaladas listas — la industria toma cerca del 16%."],
+    ["¿Cómo se conserva?", "Con el tallo cortado y en malla, dura hasta 40 días a 0–4 °C."]
+  ],
+  "auyama": [
+    ["¿Cuándo es la zafra?", "De diciembre a abril, en San Juan, Azua y Baní, bajo secano."],
+    ["¿Por qué dura tanto en almacenamiento?", "Curada al sol y guardada en bodega seca a 10–15 °C, dura hasta 3 meses."],
+    ["¿Qué derivados tiene?", "Puré de auyama y sopas cremas industriales."]
+  ],
+  "aji-morron": [
+    ["¿Se exporta?", "Sí — es el canal más fuerte junto al mayorista: cerca del 28% sale al exterior."],
+    ["¿Cuándo se produce?", "Todo el año en La Vega, Constanza y Mao, bajo riego."],
+    ["¿Qué derivados tiene?", "Paprika y pasta de ají, a partir del fruto deshidratado."]
+  ],
+  "aji-cubanela": [
+    ["¿Cuál es el canal principal?", "El mayorista (44%), con presencia fuerte de la industria de sazones (16%)."],
+    ["¿Cuándo se produce?", "Todo el año en La Vega, Mao y San Juan, bajo riego."],
+    ["¿Qué derivados tiene?", "Sazón criollo y ají deshidratado."]
+  ],
+  "lechuga-rizada": [
+    ["¿Por qué es tan perecedera?", "Su vida útil es de unos 10 días y exige cuarto frío inmediato a 0–4 °C; las pérdidas rondan el 11.8%."],
+    ["¿Quién la compra?", "Mayoristas y el canal minorista — hoteles y restaurantes — en partes casi iguales."],
+    ["¿Dónde se produce?", "En Constanza, todo el año, con ciclo de 75 días."]
+  ],
+  "lechuga-coco": [
+    ["¿Dónde se produce?", "En Constanza, todo el año, bajo riego."],
+    ["¿Cómo se conserva?", "En cuarto frío a 0–4 °C, dura unos 10 días; las pérdidas rondan el 11.5%."],
+    ["¿Qué derivados tiene?", "Ensaladas de bolsa listas para consumir."]
+  ],
+  "pepino": [
+    ["¿Cuándo se produce?", "Todo el año en La Vega, San Juan y Constanza, con ciclo corto de 65 días."],
+    ["¿Qué derivados tiene?", "Pepinillos en vinagre — la industria toma cerca del 20% del volumen."],
+    ["¿Cómo se conserva?", "En cajas a 10–12 °C, dura unas 2 semanas."]
+  ],
+  "tomate": [
+    ["¿Cuándo es la zafra?", "De noviembre a abril, con Azua, San Juan y Baní como zonas principales."],
+    ["¿Qué pesa más en el costo?", "La mano de obra (28%) y la semilla híbrida (20%); el costo ronda RD$ 37.90 por libra."],
+    ["¿Qué derivados tiene?", "Pasta, salsa y tomate enlatado — la industria absorbe cerca del 24% del volumen."]
+  ],
+  "coco-seco": [
+    ["¿Qué derivados tiene?", "Aceite, leche de coco y copra — la industria toma cerca del 34%, el mayor peso industrial de la canasta."],
+    ["¿Cuándo se produce?", "Todo el año: la palma es perenne y produce en todo el calendario."],
+    ["¿Cuál es el canal principal?", "El mayorista (40%), seguido de cerca por la industria."]
+  ],
+  "aguacate": [
+    ["¿Cuándo es la zafra?", "De septiembre a enero, con Baní, Ocoa y Miches como zonas principales."],
+    ["¿Se exporta?", "Sí — cerca del 30% de la cosecha sale al exterior."],
+    ["¿Qué derivados tiene?", "Guacamole y aceite de aguacate."]
+  ],
+  "manzana-roja": [
+    ["¿De dónde viene la manzana?", "Es un producto importado: procede de EE. UU. y Chile, y se mueve todo el año."],
+    ["¿Por qué su margen es menor?", "La estructura es de importación — FOB, flete y aranceles concentran el 84% del costo — y el margen del canal es más delgado que en la oferta local."]
+  ],
+  "zapote": [
+    ["¿Cuándo es la zafra?", "De febrero a abril, en San Cristóbal, Baní y Peravia, bajo secano."],
+    ["¿Qué derivados tiene?", "Pulpa de zapote para batidos industriales."],
+    ["¿Por qué se cosecha en preclimaterio?", "El fruto madura después de cosechado: se corta en verde para resistir el manejo y madurar en destino."]
+  ],
+  "huevo-blanco": [
+    ["¿Qué pesa más en el costo?", "El alimento balanceado (60%) — la partida dominante de toda la cadena avícola."],
+    ["¿Cómo se conserva?", "Recolectado a diario y puesto en planchas, dura un mes en ambiente fresco; las pérdidas son mínimas (3.4%)."],
+    ["¿Cuál es el canal principal?", "El mayorista, con cerca de la mitad del volumen."]
+  ],
+  "huevo-blanco-empacado": [
+    ["¿Qué diferencia al huevo empacado?", "Pasa por planta de empaque: se clasifica por peso y va en cartones de 12 y 30 unidades."],
+    ["¿Qué pesa más en su costo?", "El huevo suelto (78%) — el empaque y la logística en frío agregan el resto."],
+    ["¿Cuál es el canal principal?", "Mayorista y minorista en partes casi iguales: colmados y supermercados."]
+  ],
+  "huevo-marron": [
+    ["¿Qué pesa más en el costo?", "El alimento balanceado (60%), igual que en el resto de la línea avícola."],
+    ["¿Cuál es el canal principal?", "El mayorista (50%), con fuerte presencia minorista."],
+    ["¿Cómo se conserva?", "Un mes en ambiente fresco, con recolección diaria."]
+  ],
+  "lechoza": [
+    ["¿Cuándo se produce?", "Todo el año en San Juan, Azua y Barahona; cada planta tarda unos 10 meses en producir."],
+    ["¿Qué derivados tiene?", "Pulpa de lechoza para batidos — la industria toma cerca del 18%."],
+    ["¿Cómo se conserva?", "Cosechada en verde y empacada en espuma, dura 2 semanas a 7–10 °C."]
+  ],
+  "tamarindo-empacado": [
+    ["¿Qué diferencia al tamarindo empacado?", "Ya viene beneficiado: la vaina se convierte en pulpa y se empaca en bolsas de 1 lb."],
+    ["¿Cuándo es la zafra?", "De enero a marzo, en San Juan, Baní y Azua, bajo secano."],
+    ["¿Cómo se conserva?", "Hasta 6 meses en ambiente seco — una de las vidas útiles más largas de la canasta."]
+  ],
+  "pina": [
+    ["¿Cuándo se cosecha?", "Todo el año: la plantación tarda unos 18 meses en producir por primera vez."],
+    ["¿Se exporta?", "Sí — cerca del 24% sale al exterior, y la industria toma otro 22%."],
+    ["¿Qué derivados tiene?", "Jugo, trozos enlatados y concentrado."]
+  ],
+  "pollo-gringo": [
+    ["¿Cuánto dura el ciclo de engorde?", "Unos 45 días desde el pollito hasta el peso de faena (~5.8 lb por ave)."],
+    ["¿Qué pesa más en el costo?", "El alimento (62%), seguido del pollito (15%) — típico de la producción intensiva."],
+    ["¿Cómo se conserva?", "Beneficiado en planta y en cadena de frío a 0–4 °C, dura cerca de una semana."]
+  ],
+  "brocoli": [
+    ["¿Se exporta?", "Sí — cerca del 24% de la colocación sale al exterior."],
+    ["¿Dónde se produce?", "En Constanza, todo el año, con enfriamiento inmediato a 0–2 °C."],
+    ["¿Qué derivados tiene?", "Brócoli congelado."]
+  ],
+  "coliflor": [
+    ["¿Cuándo es la zafra?", "De noviembre a marzo, en Constanza y Jarabacoa."],
+    ["¿Cómo se conserva?", "Con hojas envolventes y en cajas, dura unas 2 semanas a 0–2 °C."],
+    ["¿Qué derivados tiene?", "Coliflor congelada."]
+  ],
+  "limon": [
+    ["¿Cuándo se produce?", "Todo el año: la limonera es perenne y produce en todo el calendario."],
+    ["¿Qué derivados tiene?", "Jugo concentrado y aceite esencial — la industria toma cerca del 24%."],
+    ["¿Dónde se produce?", "En San Cristóbal, Yaguate y Baní, bajo riego."]
+  ],
+  "rabano": [
+    ["¿Cuál es el ciclo más corto de la canasta?", "El rábano se cosecha a los 35 días — el cultivo más rápido del catálogo."],
+    ["¿Cómo se conserva?", "Atado con follaje, dura 12 días a 0–4 °C."],
+    ["¿Qué derivados tiene?", "Rábanos encurtidos."]
+  ],
+  "mandarina": [
+    ["¿Cuándo es la zafra?", "De octubre a enero, en Jarabacoa y Constanza."],
+    ["¿Qué derivados tiene?", "Jugo de mandarina."],
+    ["¿Cómo se conserva?", "En cajas a 5–8 °C, dura unas 3 semanas."]
+  ],
+  "recaito": [
+    ["¿Para qué se usa principalmente?", "Es la base del sofrito criollo: la industria lo procesa en sofritos envasados y sazones (16%)."],
+    ["¿Cómo se conserva?", "En manojos rociados, dura apenas una semana a 0–4 °C."],
+    ["¿Dónde se produce?", "En La Vega, San Cristóbal y San Juan, todo el año."]
+  ],
+  "zucchini": [
+    ["¿Cuándo se produce?", "Todo el año en Constanza y La Vega, con ciclo corto de 60 días."],
+    ["¿Se exporta?", "Sí — cerca del 18% de la colocación sale al exterior."],
+    ["¿Qué derivados tiene?", "Zucchini congelado."]
+  ],
+  "pitahaya": [
+    ["¿Se exporta?", "Sí — es el canal principal: cerca del 34% de la cosecha sale al exterior."],
+    ["¿Por qué su costo de instalación es alto?", "Requiere tutores y postes (24% del costo), además del material vegetal certificado."],
+    ["¿Cómo se conserva?", "Clasificada por brix y en cajas individuales, dura 12 días a 5–8 °C."]
+  ],
+  "batata-asada": [
+    ["¿Qué diferencia a la batata asada?", "Es un producto procesado: batata horneada y empacada lista para consumir, con 92% de conversión."],
+    ["¿Qué pesa más en el costo?", "La materia prima (64%) — la batata fresca que sirve de insumo."],
+    ["¿Quién la compra?", "Supermercados y el canal minorista (48%), seguidos del mayorista y los hoteles."]
+  ],
+  "fresa": [
+    ["¿Cuándo es la zafra?", "De noviembre a abril, exclusivamente en Constanza."],
+    ["¿Por qué es tan perecedera?", "Dura apenas 5 días: se cosecha a diario en bandejas y va directo a frío a 0–2 °C; las pérdidas rondan el 14.6%."],
+    ["¿Qué derivados tiene?", "Mermelada y pulpa de fresa."]
+  ],
+  "coco-de-agua": [
+    ["¿Qué derivados tiene?", "Agua de coco embotellada y gel de coco — la industria toma cerca del 24%."],
+    ["¿Cuándo se produce?", "Todo el año, en palmares de Monte Plata, Boyá y Duarte."],
+    ["¿Cómo se conserva?", "Con la corona rebajada y empacado, dura 2 semanas a 5–8 °C."]
+  ],
+  "molondron": [
+    ["¿Cuándo es la zafra?", "De diciembre a abril, en San Juan y Azua, bajo riego."],
+    ["¿Para qué se usa?", "Es ingrediente del sofrito; también se deshidrata para sazones."],
+    ["¿Cómo se conserva?", "Atado y en cajas, dura unos 10 días a 7–10 °C."]
+  ],
+  "habichuela-verde": [
+    ["¿Cuándo se produce?", "Todo el año en La Vega, Constanza y San Juan, con ciclo corto de 55 días."],
+    ["¿Se exporta?", "Sí — cerca del 14% de la colocación sale al exterior."],
+    ["¿Qué derivados tiene?", "Habichuela verde congelada."]
+  ],
+  "habichuela-jacumelo": [
+    ["¿Cuándo es la zafra?", "Dos ciclos: diciembre–marzo y agosto–noviembre, en San Juan, Azua y Bahoruco."],
+    ["¿Cómo se conserva?", "Trillada y en sacos de 100 lb, dura hasta 9 meses en ambiente seco."],
+    ["¿Qué derivados tiene?", "Habichuelas enlatadas y sopas de bolsa."]
+  ],
+  "habichuela-negra": [
+    ["¿Se produce en el país?", "Parcialmente: la oferta se completa con importación de Centroamérica, lo que modera el margen del canal."],
+    ["¿Cómo se conserva?", "En sacos de 100 lb, hasta 9 meses en ambiente seco."],
+    ["¿Qué derivados tiene?", "Habichuelas negras enlatadas."]
+  ],
+  "maiz": [
+    ["¿Quién compra el maíz?", "La industria de alimento balanceado (46%) es el canal dominante de la cosecha."],
+    ["¿Cómo se conserva?", "Secado a 13% de humedad y silado, dura hasta 8 meses."],
+    ["¿Qué derivados tiene?", "Harina de maíz, alimento balanceado y cereales."]
+  ],
+  "carne-de-vaca": [
+    ["¿Cuánto dura el ciclo de ceba?", "Entre 24 y 30 meses hasta el peso de faena, bajo pastoreo en Higüey, San Juan y Dajabón."],
+    ["¿Cómo se conserva?", "Madurada 7 días y envasada al vacío, dura 3 semanas a 0–2 °C."],
+    ["¿Qué derivados tiene?", "Hamburguesas, embutidos y tasajo."]
+  ],
+  "carne-de-cerdo": [
+    ["¿Cuánto dura el ciclo de engorde?", "Unos 185 días desde el lechón hasta los ~200 lb de peso vivo."],
+    ["¿Qué pesa más en el costo?", "El alimento (65%) — la partida dominante de la producción intensiva."],
+    ["¿Qué derivados tiene?", "Jamón ahumado, salchichón y tocineta — la industria toma cerca del 32%."]
+  ],
+  "chuleta": [
+    ["¿De dónde proviene?", "Es un corte del cerdo nacional: se procesa en plantas de corte de La Vega y Moca."],
+    ["¿Qué pesa más en el costo?", "La materia prima (68%) — el cerdo en canal que sirve de insumo."],
+    ["¿Cómo se conserva?", "En bandejas con atmósfera modificada, dura 2 semanas a 0–2 °C."]
+  ],
+  "costilla-ahumada": [
+    ["¿En qué consiste el proceso?", "La costilla se cura en salmuera y se ahuma, y luego se envasa al vacío: dura hasta 2 meses refrigerada."],
+    ["¿Qué pesa más en el costo?", "La materia prima (66%), seguida de la salmuera y el ahumado (14%)."],
+    ["¿Quién la compra?", "Supermercados y el canal minorista (52%), con hoteles e industria (18%)."]
+  ],
+  "sandia": [
+    ["¿Cuándo es la zafra?", "De diciembre a abril, en San Juan, Azua y Baní, bajo secano."],
+    ["¿Cómo se manipula?", "Con carga suave y cosecha dejando dos hojas: el golpe degrada la fruta; dura 2 semanas a 10–12 °C."],
+    ["¿Qué derivados tiene?", "Jugo de sandía, su forma procesada principal."]
+  ]
+};
+
+const FUENTES = {
+  "name": "https://supermercadosrd.com/grupos/name",
+  "batata": "https://supermercadosrd.com/grupos/batata",
+  "yautia-amarilla": "https://supermercadosrd.com/grupos/yautia",
+  "yautia-coco": "https://supermercadosrd.com/grupos/yautia",
+  "yuca": "https://supermercadosrd.com/grupos/yuca",
+  "guineo-verde": "https://supermercadosrd.com/grupos/guineo-verde",
+  "platano-maduro": "https://supermercadosrd.com/grupos/platano",
+  "platano-verde": "https://supermercadosrd.com/grupos/platano",
+  "papa": "https://supermercadosrd.com/grupos/papa-fresca",
+  "yautia-blanca": "https://supermercadosrd.com/grupos/yautia",
+  "auyama": "https://supermercadosrd.com/grupos/auyama",
+  "cebolla-blanca": "https://supermercadosrd.com/grupos/cebolla",
+  "cebolla": "https://supermercadosrd.com/grupos/cebolla",
+  "aguacate": "https://supermercadosrd.com/grupos/aguacate",
+  "coco-seco": "https://supermercadosrd.com/grupos/coco-seco",
+  "manzana-roja": "https://supermercadosrd.com/grupos/manzana",
+  "zapote": "https://supermercadosrd.com/grupos/zapote",
+  "lechoza": "https://supermercadosrd.com/grupos/lechosa",
+  "pina": "https://supermercadosrd.com/grupos/pina",
+  "limon": "https://supermercadosrd.com/grupos/limon",
+  "mandarina": "https://supermercadosrd.com/grupos/mandarina",
+  "sandia": "https://supermercadosrd.com/grupos/sandia",
+  "fresa": "https://supermercadosrd.com/grupos/fresa-fresca",
+  "recaito": "https://supermercadosrd.com/grupos/hierbas-frescas",
+  "aji-morron": "https://supermercadosrd.com/grupos/ajies-dulces",
+  "aji-cubanela": "https://supermercadosrd.com/grupos/ajies-dulces",
+  "ajo": "https://supermercadosrd.com/grupos/ajo",
+  "apio": "https://supermercadosrd.com/grupos/apio",
+  "berenjena": "https://supermercadosrd.com/grupos/berenjena",
+  "brocoli": "https://supermercadosrd.com/grupos/brocoli",
+  "lechuga-rizada": "https://supermercadosrd.com/grupos/lechuga",
+  "lechuga-coco": "https://supermercadosrd.com/grupos/lechuga",
+  "maiz": "https://supermercadosrd.com/grupos/maiz-fresco",
+  "molondron": "https://supermercadosrd.com/grupos/molondron",
+  "rabano": "https://supermercadosrd.com/grupos/rabano",
+  "remolacha": "https://supermercadosrd.com/grupos/remolacha-cruda",
+  "repollo": "https://supermercadosrd.com/grupos/repollo",
+  "habichuela-verde": "https://supermercadosrd.com/grupos/vainita",
+  "zanahoria": "https://supermercadosrd.com/grupos/zanahoria",
+  "zucchini": "https://supermercadosrd.com/grupos/zucchini"
+};
+
 const H = {
   fmtRD(v) { return "RD$ " + v.toFixed(2); },
   fmtN(v) { return (+v).toFixed(1); },
   pct(v, dec) { return (v >= 0 ? "+" : "") + v.toFixed(dec === undefined ? 1 : dec) + "%"; },
   cat(id) { return D.categorias.find(c => c.id === id); },
+  ficha(id) { return FICHAS[id] || null; },
+  fuente(id) { return FUENTES[id] || null; },
   producto(id) { return D.productos.find(p => p.id === id); },
   productosDe(cat) { return D.productos.filter(p => p.cat === cat); },
   actual(p) { return p.serie[p.serie.length - 1]; },
